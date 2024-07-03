@@ -6,9 +6,9 @@ package api.im_cloud.user.v2;
 option go_package = "github.com/spark-comm/spark-api/api/im_cloud/user/v2;v2";
 option java_multiple_files = true;
 option java_package = "api.im_cloud.user.v2";
+import "common/model/user/v2/user.proto";
 
 service User {
-
   //获取用户登录状态
   rpc GetUserLoginStatus(GetUserLoginStatusReq)returns(GetUserLoginStatusReply);
 }
@@ -18,6 +18,5 @@ message GetUserLoginStatusReq {
 }
 
 message GetUserLoginStatusReply {
-  string userID = 1;
-  string status = 2;
+  api.common.model.user.v2.OnlineStatus data = 1;
 }

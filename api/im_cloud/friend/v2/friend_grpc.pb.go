@@ -23,6 +23,7 @@ const (
 	Friend_AddFriend_FullMethodName                       = "/api.im_cloud.friend.v2.Friend/AddFriend"
 	Friend_ProcessFriendApplication_FullMethodName        = "/api.im_cloud.friend.v2.Friend/ProcessFriendApplication"
 	Friend_DeleteFriend_FullMethodName                    = "/api.im_cloud.friend.v2.Friend/DeleteFriend"
+	Friend_DeleteAllFriends_FullMethodName                = "/api.im_cloud.friend.v2.Friend/DeleteAllFriends"
 	Friend_SetFriendInfo_FullMethodName                   = "/api.im_cloud.friend.v2.Friend/SetFriendInfo"
 	Friend_ListFriend_FullMethodName                      = "/api.im_cloud.friend.v2.Friend/ListFriend"
 	Friend_ListFriendByIds_FullMethodName                 = "/api.im_cloud.friend.v2.Friend/ListFriendByIds"
@@ -49,6 +50,8 @@ type FriendClient interface {
 	ProcessFriendApplication(ctx context.Context, in *ProcessFriendApplicationReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 删除好友 存在
 	DeleteFriend(ctx context.Context, in *DeleteFriendReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// 单方面删除用户所有好友
+	DeleteAllFriends(ctx context.Context, in *DeleteAllFriendsReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 设置好友资料 存在
 	SetFriendInfo(ctx context.Context, in *SetFriendInfoReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 好友列表  存在
@@ -108,6 +111,15 @@ func (c *friendClient) ProcessFriendApplication(ctx context.Context, in *Process
 func (c *friendClient) DeleteFriend(ctx context.Context, in *DeleteFriendReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, Friend_DeleteFriend_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *friendClient) DeleteAllFriends(ctx context.Context, in *DeleteAllFriendsReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Friend_DeleteAllFriends_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -250,6 +262,8 @@ type FriendServer interface {
 	ProcessFriendApplication(context.Context, *ProcessFriendApplicationReq) (*emptypb.Empty, error)
 	// 删除好友 存在
 	DeleteFriend(context.Context, *DeleteFriendReq) (*emptypb.Empty, error)
+	// 单方面删除用户所有好友
+	DeleteAllFriends(context.Context, *DeleteAllFriendsReq) (*emptypb.Empty, error)
 	// 设置好友资料 存在
 	SetFriendInfo(context.Context, *SetFriendInfoReq) (*emptypb.Empty, error)
 	// 好友列表  存在
@@ -293,6 +307,9 @@ func (UnimplementedFriendServer) ProcessFriendApplication(context.Context, *Proc
 }
 func (UnimplementedFriendServer) DeleteFriend(context.Context, *DeleteFriendReq) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteFriend not implemented")
+}
+func (UnimplementedFriendServer) DeleteAllFriends(context.Context, *DeleteAllFriendsReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAllFriends not implemented")
 }
 func (UnimplementedFriendServer) SetFriendInfo(context.Context, *SetFriendInfoReq) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetFriendInfo not implemented")
@@ -399,6 +416,24 @@ func _Friend_DeleteFriend_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FriendServer).DeleteFriend(ctx, req.(*DeleteFriendReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Friend_DeleteAllFriends_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAllFriendsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FriendServer).DeleteAllFriends(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Friend_DeleteAllFriends_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FriendServer).DeleteAllFriends(ctx, req.(*DeleteAllFriendsReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -673,6 +708,10 @@ var Friend_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteFriend",
 			Handler:    _Friend_DeleteFriend_Handler,
+		},
+		{
+			MethodName: "DeleteAllFriends",
+			Handler:    _Friend_DeleteAllFriends_Handler,
 		},
 		{
 			MethodName: "SetFriendInfo",

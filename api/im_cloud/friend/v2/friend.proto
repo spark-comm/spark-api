@@ -17,6 +17,8 @@ service Friend {
   rpc ProcessFriendApplication(ProcessFriendApplicationReq)returns(google.protobuf.Empty);
   //删除好友 存在
   rpc DeleteFriend (DeleteFriendReq) returns (google.protobuf.Empty);
+  // 单方面删除用户所有好友
+  rpc DeleteAllFriends(DeleteAllFriendsReq)returns(google.protobuf.Empty);
   //设置好友资料 存在
   rpc SetFriendInfo (SetFriendInfoReq) returns (google.protobuf.Empty);
   //好友列表  存在
@@ -98,7 +100,12 @@ message DeleteFriendReq {
 
   string userID = 3;
 }
-
+/*
+  单方面删除所有好友（注销时用）
+ */
+message DeleteAllFriendsReq {
+  string userID = 1; //用户id
+}
 /*
     设置好友资料 存在
     -------------------------------------------
