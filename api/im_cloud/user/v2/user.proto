@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package api.im_cloud.user.v2;
+
+
+option go_package = "github.com/spark-comm/spark-api/api/im_cloud/user/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.im_cloud.user.v2";
+
+service User {
+
+  //获取用户登录状态
+  rpc GetUserLoginStatus(GetUserLoginStatusReq)returns(GetUserLoginStatusReply);
+}
+
+message GetUserLoginStatusReq {
+  string userID = 1;
+}
+
+message GetUserLoginStatusReply {
+  string userID = 1;
+  string status = 2;
+}

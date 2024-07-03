@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+// 定义包名
+package api.user_center.user.v2;
+import "errors/errors.proto";
+
+option go_package = "github.com/spark-comm/spark-api/api/user_center/user/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.user_center.user.v2";
+
+enum ErrorProfileReason {
+  // 设置缺省错误码
+  option (errors.default_code) = 500;
+
+  // 用户信息未找到
+  PROFILE_NOT_FOUND = 0 [(errors.code) = 404];
+  //获取数据失败
+  GET_DATE = 2 [(errors.code) = 500];
+  //编辑用户异常
+  FAILED_TO_EDIT_PROFILE = 3 [(errors.code) = 400];
+  //手机号不能为空
+  PHONE_IS_NOT_EMPTY = 4 [(errors.code) = 400];
+  //删除用户信息失败
+  FAILED_DELETE_PROFILE = 5 [(errors.code) = 500];
+  //历史密码验证失败
+  HISTORY_PRIVACY_PASSWORD_VERIFICATION_FAIL = 6 [(errors.code) = 500];
+  //输入邮箱与用户绑定邮箱不一致
+  PARAMS_EMAIL_NOT_IS_USER_BIND = 7 [(errors.code) = 400];
+  //输入手机与用户绑定手机不一致
+  PARAMS_PHONE_NOT_IS_USER_BIND = 8 [(errors.code) = 400];
+  //超过批处理的最大数量
+  EXCEEDED_THE_MAXIMUM_BATCH_PROCESSING_QUANTITY =9 [(errors.code) = 400];
+  //批量导入失败
+  BATCH_INSERT_ERROR =10 [(errors.code) = 400];
+  //数据不能为空
+  DATA_IS_NOT_EMPTY =11 [(errors.code) = 400];
+  //用户已经实名
+  USER_HAS_REAL_NAME = 12 [(errors.code) = 400];
+  //身份证好已被他人绑定
+  ID_NUMBER_HAS_BEEN_USED = 13 [(errors.code) = 400];
+  //实名认证失败
+  USER_REAL_NAME_ERR = 14 [(errors.code) = 400];
+}

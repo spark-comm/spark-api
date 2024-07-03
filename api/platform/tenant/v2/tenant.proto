@@ -1,0 +1,186 @@
+syntax = "proto3";
+
+package api.platform.tenant.v2;
+
+import "validate/validate.proto";
+import "common/model/v2/node.proto";
+option go_package = "github.com/spark-comm/spark-api/api/platform/tenant/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.platform.tenant.v2";
+import "common/model/v2/conn.proto";
+import "google/protobuf/empty.proto";
+// 租户信息
+message Tenant {
+  string id = 1;//租户主键
+  int64 createdAt = 2;//创建时间
+  int64 updatedAt = 3;//创建时间
+  int64 deletedAt = 4;//删除时间
+  string associatedUsersID = 5;//开通租户id
+  string name = 6; //租户名称
+  string logo = 7;//租户logo
+  string introduce = 8;//简介
+  string websiteAddress = 9;//网站地址
+  int32 websiteStatus = 10;//网站状态1，申请中，0未开通，2:可用
+  string packageType = 11;//套餐类型
+  int64 maxNumber = 12;// 最大租户数
+  int64 maxGroupNumber = 13; //最大群人数
+  string phone = 14; //手机号
+  int32 status = 15; //状态，1，可用，0未开通，2过期
+  int64 startTime = 16;//开始时间
+  int64 endTime = 17;//结束时间
+  string code = 18; //租户名称
+}
+
+/*
+    创建租户
+    -------------------------------------------
+ */
+message CreateRequest {
+  string id = 1;//租户主键
+  string name = 2; //租户名称
+  string packageType = 3;//套餐类型
+  int64 maxNumber = 4;// 最大租户数
+  int64 maxGroupNumber = 5; //最大群人数
+  int32 status = 6; //状态，1，可用，0未开通，2过期
+  int64 startTime = 7;//开始时间
+  int64 endTime = 8;//结束时间
+  string associatedUserID = 9; // 租户id
+  string phone = 10; //手机号
+  string pubKey =11; //公钥
+  string priKey =12; //私钥
+}
+message CreateReply {
+}
+/*
+    租户申请
+    -------------------------------------------
+ */
+message ApplicationRequest {
+  string id=1; //租户id
+  string name = 2; //租户名称
+  string packageType = 3;//套餐类型
+  int64 maxNumber = 4;// 最大租户数
+  int64 maxGroupNumber = 5; //最大群人数
+  string associatedUserID = 6; // 租户id
+  string key = 7;  //短信的key
+  string code = 8; //短信编码
+  string phone = 9; //手机号
+  int64  duration = 10; //申请时长
+}
+message ApplicationReply {
+}
+/*
+    更新租户
+    -------------------------------------------
+ */
+message UpdateRequest {
+  string id = 1;//租户主键
+  optional string name = 2; //租户名称
+  optional string packageType = 3;//套餐类型
+  optional int64 maxNumber = 4;// 最大租户数
+  optional int64 maxGroupNumber = 5; //最大群人数
+  optional int32 status = 6; //状态，1，可用，0未开通，2过期
+  optional int64 startTime = 7;//开始时间
+  optional int64 endTime = 8;//结束时间
+  optional string logo = 9;//更换logo
+  optional string introduce = 10;//租户简介
+  optional string websiteAddress = 11;//网站地址
+  optional int32 websiteStatus = 12; //网站状态
+  optional string code = 13; //租户名称
+  optional string pubKey =14; //公钥
+  optional string priKey =15; //私钥
+  optional string associatedUserID = 16; // 租户id
+  optional string phone = 17;  //手机号
+}
+message UpdateReply {
+}
+/*
+    绑定手机号
+    -------------------------------------------
+ */
+message BindingPhoneRequest {
+  string id = 1;//租户主键
+  string key = 2 [(validate.rules).string.min_len = 1];  //短信的key
+  string code = 3 [(validate.rules).string.min_len = 0]; //短信编码
+  string phone = 4; //手机号
+}
+message BindingPhoneReply {
+}
+/*
+    删除租户
+    -------------------------------------------
+ */
+message DeleteRequest {
+  string id = 1;//租户主键
+}
+message DeleteReply {
+}
+/*
+    根据id获取租户
+    -------------------------------------------
+ */
+message FindByIDRequest {
+  string id = 1;//租户主键
+}
+message FindByIDReply {
+  Tenant data = 1;
+}
+/*
+    根据id获取网站服务
+    -------------------------------------------
+ */
+message WebsitePathRequest {
+  string id = 1;//租户主键
+}
+message WebsitePathReply {
+  string url = 1;
+}
+/*
+    根据id获取租户
+    -------------------------------------------
+ */
+message GetListRequest {
+  optional string id = 1;//租户主键
+  optional string name = 2; //租户名称
+  optional string packageType = 3;//套餐类型
+  optional int32 status = 4; //状态，1，可用，0未开通，2过期
+  api.common.model.v2.Pagination pagination = 5;
+}
+message GetListReply {
+  int64 total = 1; // 总计条数
+  repeated Tenant list = 2;
+}
+
+/*
+    根据创建租户id获取租户
+    -------------------------------------------
+ */
+message FindByAssociatedUsersIDRequest {
+  string associatedUsersID = 1;//租户主键
+}
+message FindByAssociatedUsersIDReply {
+  Tenant data = 1;
+}
+
+service tenant {
+  // 套餐申请
+  rpc Application (ApplicationRequest) returns (ApplicationReply);
+  // 创建租户
+  rpc Create (CreateRequest) returns (CreateReply);
+  // 更新租户
+  rpc Update (UpdateRequest) returns (UpdateReply);
+  // 绑定手机号
+  rpc BindingPhone(BindingPhoneRequest) returns (BindingPhoneReply);
+  // 删除租户
+  rpc Delete(DeleteRequest) returns (DeleteReply);
+  // 查询租户
+  rpc FindByID(FindByIDRequest) returns (FindByIDReply);
+  // 获取网站地址
+  rpc WebsitePath(WebsitePathRequest) returns (WebsitePathReply);
+  // 获取租户列表
+  rpc GetList(GetListRequest) returns (GetListReply);
+  // 根据创建租户id获取租户
+  rpc FindByAssociatedUsersID(FindByAssociatedUsersIDRequest) returns (FindByAssociatedUsersIDReply);
+  // 网站申请
+  rpc WebsiteApplication(google.protobuf.Empty)returns(google.protobuf.Empty);
+}

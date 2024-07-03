@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+// 定义包名
+package api.platform.tenant.v2;
+import "errors/errors.proto";
+
+option go_package = "github.com/spark-comm/spark-api/api/platform/tenant/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.platform.tenant.v2";
+
+enum TenantErrorReason {
+  // 设置缺省错误码
+  option (errors.default_code) = 500;
+  // 创建租户失败
+  CREATE_TENANT_ERROR = 0 [(errors.code) = 401];
+  // 更新租户信息失败
+  UPDATE_TENANT_ERROR = 1 [(errors.code) = 505];
+  // 绑定手机号失败
+  BINDING_PHONE_ERROR = 2 [(errors.code) = 505];
+  // 删除租户
+  DELETE_TENANT_ERROR = 3 [(errors.code) = 505];
+  // 查询租户失败
+  FIND_TENANT_BY_ID_ERROR = 4 [(errors.code) = 505];
+  //获取租户列表失败
+  GET_TENANT_LIST_ERROR = 5 [(errors.code) = 505];
+  //根据关联用户查询租户失败
+  FIND_TENANT_BY_ASSOCIATED_USERS_ID_ERROR = 6 [(errors.code) = 505];
+  // 租户已存在
+  TENANT_ALREADY_EXISTS = 7 [(errors.code) = 401];
+  // 不存在
+  TENANT_NOT_FOUND = 8 [(errors.code) = 404];
+  // Verification code verification failed
+  VERIFICATION_CODE_VERIFICATION_FAILED = 9 [(errors.code) = 404];
+  // 序列化数据结构失败
+  MARSHAL_TENANT_DATA_ENCODING_FAIL = 10[(errors.code) = 505];
+  // 加密请求信息失败encryption
+  ENCRYPTION_REQUEST_OPTION_FAIL = 11[(errors.code) = 401];
+  // 手机验证码错误
+  MOBILE_VERIFICATION_CODE_ERROR = 12 [(errors.code) = 505];
+  // 申请参数错误
+  APPLICATION_PARAMETER_ERROR = 13 [(errors.code) = 505];
+  // 申请失败
+  APPLICATION_ERROR = 14 [(errors.code) = 505];
+  // 租户未开通
+  TENANT_NOT_OPENED = 15 [(errors.code) = 404];
+
+  // 申请审批中
+  APPLICATION_UNDER_REVIEW = 16 [(errors.code) = 505];
+  //网站已开通
+  THE_WEBSITE_HAS_BEEN_OPENED= 17 [(errors.code) = 505];
+  //申请审核中，请勿重复提交
+  TENANT_MULTIPLE_APPLICATION = 18 [(errors.code) = 505];
+}

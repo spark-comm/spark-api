@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+package api.common.model.v2;
+
+option go_package = "github.com/spark-comm/spark-api/api/common/model/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.common.model.v2";
+import "validate/validate.proto";
+// 消息标识符
+enum Identifier {
+	GetMaxSeq=0; //获取seq
+	SendMsg=1; //发送消息
+	SignalMsg=2;//信令消息
+	PullMsg=3;//客户端拉取服务端消息
+	KickOnlineMsg=4; //踢出用户
+	LoginOutMsg=5; //用户退出消息
+	SetBackgroundStatus=6;//用户后台运行状态设置
+	SetLanguage=7;//设置用户当前语言
+	PushMsg=8;//服务端向客户端推送消息
+	PushAckMsg=9;//服务端向客户端推送ack消息
+}
+// 消息响应码
+enum ResCode {
+	Success=0; //成功
+	DecodeErr=1;//消息内容解码错误
+	ArgsValidateErr=2;//参数错
+	SendErr=3;//发送失败
+	SendReceiverError=4; //发送消息到接收器异常
+}
+// 发送消息结构
+message MsgReq {
+	Identifier	identifier=1;//消息标识服
+	string 	token=2;//token
+	string  sendID=3 [(validate.rules).string.min_len=1];// 发送者id
+	string  trackID=4 [(validate.rules).string.min_len=1];//链路id
+	string  msgIncr=5 [(validate.rules).string.min_len=1]; //ack标记
+	bytes   data=6;//消息内容
+}
+// 发送消息响应
+message MsgReply{
+	Identifier identifier=1;//消息标识服
+	string  trackID=2;//链路id
+	string  msgIncr=3; //消息增量
+	ResCode code=4; //业务编码
+	string  msg=5;// 提示消息
+	string  reason=6; //原因
+	bytes   data=7;//消息内容
+	string  serverMsgId=8;//服务端消息id
+	int64   seq=9;//用户消息的
+}
+// 获取最大seq的消息结构
+message GetMaxSeqMsg{
+	int32 sessionType=1; //会话类型，个人和群聊
+		string uid=2;//用户id或群id
+}
+// 最大seq的消息结构
+message ResMaxSeqMsg{
+	int32 sessionType=1; //会话类型，个人和群聊
+	int64 max_seq=2; //最大的seq
+	string uid=3;//用户id或群id
+}
+
+// 客户端拉取服务消息的请求消息结构
+message PullingMsg{
+	int32 sessionType=1; //会话类型，个人和群聊
+	int32 msgType=2; //拉取的消息类型1:离线消息；2:漫游消息;3:历史消息
+	string uid=3;//用户id或群id
+	repeated int64 seqs=4 [(validate.rules).repeated.min_items=1];//消息的seq集合
+}
+// 客户端拉取消息的返回
+message ResPullingMsg{
+	int32 sessionType=1; //会话类型，个人和群聊
+	string uid=3;//用户id或群id
+	int64 min_seq=4; //最小seq
+	repeated  api.common.model.v2.MsgData messages=5; //消息数量
+	int64 count=6; //总数
+}
+// 离线推送
+message OfflinePushInfo{
+	string title = 1; //标题
+	string desc = 2; //描述
+	string ex = 3; //扩展字段
+	string iOSPushSound = 4; //推送提示音
+	bool iOSBadgeCount = 5; //是否闪灯
+}
+//消息结构
+message MsgData {
+	string  sendID = 1; //发送者
+	string  receiveID = 2;//接收者
+	string groupID = 3; //群id
+	string clientMsgID = 4; //客户端消息id
+	string serverMsgID = 5; //服务端消息id
+	string  senderPlatform = 6; //发送平台
+	string  senderNickname = 7; //发送者昵称
+	string  senderFaceURL = 8; //发送者头像
+	int32   sessionType = 9; //会话类型
+	int32 msgFrom = 10; //消息类型。0用户，1系统
+	int32 contentType = 11; //内容类型
+	bytes content = 12 [(validate.rules).bytes.min_len=1]; //消息内容
+	int64 seq = 14; //消息的seq
+	int64 sendTime = 15; //消息发送时间
+	int64 createTime = 16; //创建时间
+	int32 status = 17; //状态
+	map<string, bool> options = 18; //配置项
+	OfflinePushInfo offlinePushInfo = 19; //推送详情
+	repeated string atUserIDList = 20; // at的人
+	bytes msgDataList = 21; //消息详细新
+	string attachedInfo = 22; //附加信息
+	string  ex = 23;//扩展字段
+	bool   isReact = 40; //是否已读
+	bool isExternalExtensions = 41; //是否外部扩展
+	int64 msgFirstModifyTime = 42; //首次更新时间
+}
+// 内部消息传输对象
+message MessageTransfer{
+	string userId=1; //用户ID
+	string tenantId=2; //租户的id
+	MsgData msgDate=3; //消息内容
+}
+// 存储发送消息到mq
+message MessageSaveToMq{
+	repeated MessageTransfer messages=1;
+}
+enum SessionType {
+	SingleChatType = 0;
+	GroupChatType  = 1;
+	SuperGroupChatType  = 2;
+	NotificationChatType = 3;
+}

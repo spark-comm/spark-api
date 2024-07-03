@@ -1,0 +1,121 @@
+syntax = "proto3";
+
+package api.common.model.group.v2;
+
+option go_package = "github.com/spark-comm/spark-api/api/common/model/group/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.common.model.group.v2";
+import "common/net/v2/net.proto";
+// 群信息存在
+message GroupInfo {
+	string groupID = 1;     //群Id
+	string groupName = 2; //群昵称
+	string notification = 3;  //群公告
+	string introduction = 4;//群简介
+	string faceURL = 5;//群头像
+	string ownerUserID = 6;//群主id
+	int64 createTime = 7;//创建时间
+	int64 memberCount = 8;//群用户数
+	string ex = 9;//扩展
+	int32 status = 10; //群状态
+	string creatorUserID = 11; //创建者
+	int32 groupType = 12;//群类型
+	int32 needVerification = 13; //加群是否需要验证:0需要,1不需要
+	int32 lookMemberInfo = 14; //支持成员信息查看:0支持,1不支持
+	int32 applyMemberFriend = 15; //是否可通过群加好友:0支持,1不支持
+	int64 notificationUpdateTime = 16;//群公告更新时间
+	string notificationUserID = 17; //更新公告用户id
+	string code = 18; //群编码,对应前台的群id
+	int32 maxMemberCount = 19; //群的最大用户数
+	string attachedInfo = 20; //附加信息
+	int32 onlyManageUpdateName = 21; //是否仅管理员或群主能够更新群名称
+	int32 isReal = 22; //是否实名认证，默认否
+	int32 isOpen = 23; //是否公开群组,1:开启;2:关闭
+	int32 allowPrivateChat = 24; //允许成员私聊,1:开启;2:关闭
+	int32 isComplete = 25; //是否完成同步
+	string ownerCode = 26; //群主code
+	string ownerNickname =27;//群主昵称
+	string createCode = 28;//创建者code
+	string createNickname = 29;//创建者昵称
+	int64 updateAt= 30;//更新时间
+}
+
+message GroupRequestInfo {
+	string groupID = 1; //群ID
+	string groupName = 2; //群名称
+	string notification = 3; //通知
+	string introduction = 4;// 简介
+	string groupFaceURL = 5;//群头像
+	int64 createTime = 6;//创建时间
+	int32 status = 7;//状态
+	string creatorUserID = 8;//创建者
+	int32 groupType = 9;//群类型
+	string ownerUserID = 10;//本人id
+	int32 memberCount = 11;//群人数
+	string groupCode = 12;//群code码
+	string userID = 13;//用户id
+	string nickname = 14;//昵称
+	string userFaceURL = 15;//用户头像
+	int32 gender = 16;//性别
+	string code = 17;//邀请码
+	int32 handleResult = 18;//处理方法
+	string reqMsg = 19;//请求消息
+	string handledMsg = 20;//处理消息
+	int64 reqTime = 21;//请求时间
+	string handleUserID = 22;//处理人
+	int64 handledTime = 23;//处理时间
+	string ex = 24;//扩展
+	string attachedInfo = 25;//附加信息
+	int32 joinSource = 26;//加入来源
+	string inviterUserID = 27;//邀请人
+}
+
+//群的基础信息
+message BaseGroupInfo {
+	string groupID = 1;
+	string faceURL = 2;
+	string nickName = 3;
+	int64 memberCount = 4;
+	int64 groupType = 5;//群类型
+	int32 status = 6;//群状态
+	int64 updateAt= 7;//更新时间
+	string code = 8;
+	string ownerUserID = 9;
+	string creatorUserID = 10;
+}
+
+// 群成员信息
+message MemberInfo {
+	string  groupID = 1; //群ID
+	string userID = 2; //用户ID
+	int32 roleLevel = 3; //用户等级
+	int64 joinTime = 4;//加群时间
+	string nickname = 5; //用户昵称
+	string faceUrl = 6;//头像
+	string attachedInfo = 7; //附加信息
+	int32 joinSource = 8; //来源
+	string  operatorUserID = 9;//操作人id
+	string ex = 10;//扩展
+	int64 muteEndTime = 11;//禁言时间
+	string message = 12;//签名
+	string code = 13;//邀请码
+	string phone = 14;//手机号
+	string email = 15;//邮箱
+	int64 birth = 16;//生日
+	int32 gender = 17;//性别
+	string inviterUserID = 18; //邀请人
+	string groupUserName = 19; //用户在群中的昵称
+	string backgroundUrl = 20;//背景图片
+	int64 updateAt= 21;//更新时间
+}
+
+message GroupAbstractInfo{
+	string groupID = 1;
+	uint32 groupMemberNumber = 2;
+	uint64 groupMemberListHash = 3;
+}
+//根据群id获取列表 兼容老版本
+message GetByGroupListSdk{
+	string groupID = 1;
+	api.common.net.v2.RequestPagination pagination = 2;
+}

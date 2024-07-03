@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package api.common.enum.v2;
+
+option go_package = "github.com/spark-comm/spark-api/api/common/enum/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.common.enum.v2";
+// 终端
+enum Terminal {
+	TerminalPC=0;
+	TerminalMobile=1;
+	TerminalWeb=2;
+}
+//设备平台
+enum Platform{
+		IOS=0;
+		Android=1;
+		Windows=2;
+		OSX=3; //mac os
+		Web=4; //网页
+		MiniWeb=5;//迷你web
+		Linux=6;//Linux设备
+		APad=7;//安卓平板
+		IPad=8;//苹果平板
+}
+// 多设备在线策略
+enum MultiDeviceOnlineStrategy{
+	DefNotKick = 0; //默认多端不互踢都可以在线
+	AllLoginButSameTermKick=1;//全端都可以登录，但是同一端互踢
+	SingleTerminalLogin=2;//只有一个终端能够登录
+	WebAndOther=3;//web端可以同时在线，另一端只能登录
+	PCAndOther=4;//PC终端可以同时在线，但其他终端只能登录其中一个端点
+}

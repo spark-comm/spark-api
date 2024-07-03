@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package api.im_cloud.access.v2;
+
+
+import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
+option go_package = "github.com/spark-comm/spark-api/api/im_cloud/access/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.im_cloud.access.v2";
+/*
+    发送用户请求
+    -------------------------------------------
+ */
+message SendReq {
+  string method = 1; // 类型
+  bytes data = 2;// 数据
+}
+
+message SendReply {
+  bytes data=1; //返回的json数据
+}
+/*
+    接收请求
+    -------------------------------------------
+ */
+message ReceiveReq {
+  string method = 1; // 类型
+  string data = 2;// 数据
+  string sign = 3;// 签名
+}
+
+message ReceiveReply {
+  string data = 1;// 数据
+  string sign = 2;// 签名
+}
+service Access {
+  // 发送请求信息
+  rpc SendRequest (SendReq) returns (SendReply);
+  // 接收请求信息
+  rpc ReceiveRequest (ReceiveReq) returns (ReceiveReply);
+}
+// WebsiteConfig 套餐配置
+message WebsiteConfig {
+   int64 id=1; //主键
+   string nodeId =2; //节点ID
+   string packageName = 3;//套餐名称
+   int64 maxUserNum = 4;//最多支持注册用户数
+   int64 maxDayAlive = 5;//最多日活
+   int64 maxGroupNum = 6;//群组最大人数
+   float packagePrice = 7;//套餐价格
+   int64 purchaseDuration = 8; // 套餐时长
+}
+
+message TenantApplyItem {
+  string id = 1;
+  string nodeId = 2;
+  string associatedUsersID = 3;
+  string phone = 4;
+  int32  applyType = 5;
+  string packageType = 6;
+  int64 startTime = 7;
+  int64 endTime = 8;
+  int64 maxNumber = 9;
+  int64 maxGroupNumber = 10;
+  uint32 handleResult = 11;
+  string handleReason = 12;
+  string handleUserId = 13;
+  int64 created_at = 14;
+  int64 updated_at = 15;
+}
+
+message TenantApplyListReply {
+  int64 total = 1;
+  repeated TenantApplyItem list = 2;
+}

@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package api.common.model.v2;
+
+option go_package = "github.com/spark-comm/spark-api/api/common/model/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.common.model.v2";
+import "validate/validate.proto";
+// 节点基本信息
+message NodeBase {
+	string nodeId = 1; // profile id 和 userId 等价
+	string name = 2; // 名称
+	string code = 3; // 节点邀请码
+	int64 startTime = 4; // 开始时间
+	int64 endTime = 5; // 结束时间
+	string masterApi = 6; // 管理节点地址
+	string slaveApi = 7; // 应用节点接口地址
+	string manageApi = 8; // 管理节点地址
+	string imApiUrl = 9; // 客户imapi域名地址,兼容2.0
+	string imWsUrl = 10; // im ws api 地址
+	string version = 11; // 版本
+	string avAppid = 12; // 腾讯音视频app id
+	string avSecret = 13; // 腾讯音视频密钥
+	string logo = 14; // logo
+	int32 nodeType = 15; //节点类型 0 独立节点 1 代理节点
+	string promotionCode = 16; // 代理者推广码
+	int64 createdAt = 17; // 创建时间
+	int64 updatedAt = 18; // 更新时间
+	int64 deletedAt = 19; // 删除时间
+	int32 status    = 20;// 1：启用 2：停用 3: 时间限制
+	int32  sort = 21;//排序
+	string masterNodeId = 22; // 主几点id// 当为租户节点时
+}
+// 租户下发信息信息
+message TenantDistributeInfo {
+	string id = 1;//租户主键
+	int64 createdAt = 2;//创建时间
+	int64 updatedAt = 3;//创建时间
+	int64 deletedAt = 4;//删除时间
+	string associatedUserID = 5;//开通用户id
+	string name = 6; //租户名称
+	string logo = 7;//租户logo
+	string introduce = 8;//简介
+	string websiteAddress = 9;//网站地址
+	int32 websiteStatus = 10;//网站状态1，申请中，0未开通，2:可用
+	string packageType = 11;//套餐类型
+	int64 maxNumber = 12;// 最大用户数
+	int64 maxGroupNumber = 13; //最大群人数
+	string phone = 14; //手机号
+	int32 status = 15; //状态，1，可用，0未开通，2过期
+	int64 startTime = 16;//开始时间
+	int64 endTime = 17;//结束时间
+	string code = 18; //租户code
+	string pubKey = 19; //租户公钥
+	string priKey = 20; // 租户私钥
+}
+// 租户上报信息信息
+message TenantEscalationInfo {
+	string id = 1;//租户主键
+	int64 createdAt = 2;//创建时间
+	int64 updatedAt = 3;//创建时间
+	int64 deletedAt = 4;//删除时间
+	string associatedUsersID = 5;//开通用户id
+	string name = 6; //租户名称
+	string logo = 7;//租户logo
+	string introduce = 8;//简介
+	string websiteAddress = 9;//网站地址
+	int32 websiteStatus = 10;//网站状态1，申请中，0未开通，2:可用
+	int64 maxNumber = 12;// 最大用户数
+	int64 maxGroupNumber = 13; //最大群人数
+	string phone = 14; //手机号
+	int32 status = 15; //状态，1，可用，0未开通，2过期
+	int64 startTime = 16;//开始时间
+	int64 endTime = 17;//结束时间
+}
+// 主节点信息同步
+message NodeMasterSyncInfo {
+	string nodeId = 1; // 节点id
+	string enable = 2; // 是否可用0 可用 1 不可用
+	string masterApi = 3; // 主节点地址
+	string masterPubKey = 4; // 主节点公钥匙
+	string functions = 5; // 节点功能
+	string nodePriKey = 6; // 应用节点接口地址
+}
+
+// 获取节点信息同步请求
+message NodeMasterSyncInfoReq {
+	string nodeId = 1; // 节点id
+}
+

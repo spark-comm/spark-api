@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+// 定义包名
+package api.im_cloud.access.v2;
+import "errors/errors.proto";
+
+option go_package = "github.com/spark-comm/spark-api/api/im_cloud/access/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.im_cloud.access.v2";
+
+enum ErrorAccessReason {
+  // 设置缺省错误码
+  option (errors.default_code) = 500;
+
+  // 发送请求失败
+  SEND_REQUEST_ERR = 0 [(errors.code) = 404];
+  //
+  KEY_ERR = 2 [(errors.code) = 504];
+  //链接异常
+  LINK_FAILURE = 3 [(errors.code) = 501];
+  //验证签名失败
+  VERIFY_SIGN_ERR = 4[(errors.code) = 504];
+  //签名失败
+  REQ_SIGN_ERR = 5[(errors.code) = 504];
+  // 处理函数不不存在
+  HANDLE_METHOD_NOT_FOUND = 6[(errors.code) = 404];
+}

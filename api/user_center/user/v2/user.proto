@@ -1,0 +1,179 @@
+syntax = "proto3";
+
+package api.user_center.user.v2;
+
+import "validate/validate.proto";
+import "common/enum/v2/enums.proto";
+import "common/model/v2/user.proto";
+option go_package = "github.com/spark-comm/spark-api/api/user_center/user/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.user_center.user.v2";
+
+// 用户在线状态
+enum UserOnlineType {
+    USER_ONLINE_TYPE_OFFLINE = 0; // 离线
+    USER_ONLINE_TYPE_ONLINE = 1; // 在线
+}
+
+service User {
+    //创建用户
+    rpc CreateUser (CreateUserReq) returns (CreateUserReply);
+    //修改用户密码
+    rpc UpdatePassword (UpdatePasswordReq) returns (UpdatePasswordReply);
+    //删除用户
+    rpc DeleteUser (DeleteUserReq) returns (DeleteUserReply);
+    //校验密码
+    rpc VerifyPassword (VerifyPasswordReq) returns (VerifyPasswordReply);
+    //批量插入
+    rpc BatchInsert (BatchInsertUserReq) returns (BatchInsertUserReply);
+    // 获取同步用户信息
+    rpc GetSyncUserInfo (GetSyncUserInfoReq) returns (GetSyncUserInfoReply);
+    // 同步用户信息
+    rpc SyncUserInfo (SyncUserInfoReq) returns (SyncUserInfoReply);
+    // userId 查询nodeId
+    rpc GetNodeInfoByUserId(GetNodeInfoByUserIdReq)returns(GetNodeInfoByUserIdReply);
+    // 直接下发用户数据
+    rpc DistributeUser(DistributeUserReq)returns(DistributeUserReply);
+    // 更具node和用户中心id获取用户信息
+    rpc GetUserNodeByNodeIdAndCenterUserId(GetUserNodeByNodeIdAndCenterUserIdReq)returns(GetUserNodeByNodeIdAndCenterUserIdReply);
+    //注销节点账号
+    rpc CancelNodeAccount(CancelNodeAccountReq)returns (CancelNodeAccountReply);
+}
+
+/*
+    创建用户
+    -------------------------------------------
+ */
+message CreateUserReq {
+    string account = 1[(validate.rules).string.min_len = 6]; //账号
+    api.common.enum.v2.AccountType accountType = 2; //账号类型
+    string password = 3 [(validate.rules).string = {min_len: 8, max_len: 16}]; // 密码
+    string nickname = 4; // 昵称
+    int32 areaCode = 5; // 区号
+    string shareCode = 6; // 分享码
+    string faceUrl = 7; // 头像
+    string email = 8 ; // 邮箱
+    string phone = 9 ; // 手机号
+    api.common.enum.v2.Gender gender = 10; // 性别 1,女；2，男
+    int32 isGenerate = 11; //是否后台生成账号
+    string nodeId = 12; //节点id
+    string tenantId = 13;// 租户id
+    string fromUserId = 14; //来源用户id
+}
+message CreateUserReply {}
+
+/*
+    更新密码
+    -------------------------------------------
+ */
+message UpdatePasswordReq {
+    string userId = 1; // 用户 id
+    string password = 2 [(validate.rules).string = {min_len: 8, max_len: 16}]; // 密码
+}
+message UpdatePasswordReply {}
+
+
+/*
+    删除用户
+    -------------------------------------------
+ */
+message DeleteUserReq {
+    string userId = 1; // 用户 id
+}
+message DeleteUserReply {}
+
+/*
+    校验密码
+    -------------------------------------------
+ */
+message VerifyPasswordReq {
+    string userId = 1; // 用户 id
+    string password = 2; // 密码
+}
+message VerifyPasswordReply {
+    bool ok = 1;
+    string id = 2;
+}
+
+// 批量插入
+message BatchInsertUserReq {
+    string nodeId =1; // 节点 id
+    repeated UserData list = 2 ;// 插入的数据
+}
+message BatchInsertUserReply {
+
+}
+// 获取同步用户信息
+message GetSyncUserInfoReq {
+    string userId =1; //用户id
+}
+message GetSyncUserInfoReply {
+    api.common.model.v2.SyncUser userInfo = 1; //用户信息
+    repeated SyncUserNode nodes=2; //用户所在的节点
+}
+// 同步用户信息
+message SyncUserInfoReq {
+    api.common.model.v2.SyncUser userInfo = 1; //用户信息
+}
+message SyncUserInfoReply {
+}
+// 同步的用户节点信息
+message SyncUserNode {
+    string nodeId = 1; // 节点 id
+    string faceURL = 2 ; // 头像
+    string nickname = 3 ; // 昵称
+    string fromUserId = 4 ; // 推广来源用户id
+    string userId = 5 ; // 用户所在节点id
+    string centerUserId = 6 ; // 用户中心的id
+    string tenantId = 7 ; // 租户id
+}
+message UserData {
+    int64 createdAt = 1; // 创建时间
+    int64 updatedAt = 2; // 更新时间
+    int64 deletedAt = 3; // 删除时间
+    string id = 4; // profile id 和 userId 等价
+    string password = 5;// 密码
+    string tenantId = 6;// 租户id
+}
+
+message GetNodeInfoByUserIdReq{
+   string  userId = 1;  // 用户id
+}
+message GetNodeInfoByUserIdReply{
+    repeated UserNode userNodes = 1; // 用户所在的节点
+}
+message UserNode {
+    string logo= 1; //   节点logo
+    string name = 2; // 节点名称
+    string nodeId = 3; // 节点id
+    string code = 4; // 节点code
+}
+// 下发用户信息
+message DistributeUserReq{
+    string  userId = 1;  // 用户id
+    string  nodeId = 2;  // 用户id
+    string code = 3; // 节点code
+    bool  isJoinDistribute = 4; // 是否加入社区下发
+}
+message DistributeUserReply{
+
+}
+// 下发用户信息
+message GetUserNodeByNodeIdAndCenterUserIdReq{
+    string  userId = 1;  // 用户id
+    string  nodeId = 2;  // 用户id
+}
+message GetUserNodeByNodeIdAndCenterUserIdReply{
+     SyncUserNode userNode=1; //用户所在的节点
+}
+
+
+/*
+    注销账号
+    -------------------------------------------
+ */
+message CancelNodeAccountReq {
+    string userId = 1 [(validate.rules).string.min_len = 1]; // 用户ID
+}
+message  CancelNodeAccountReply {
+}

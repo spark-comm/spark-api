@@ -1,0 +1,173 @@
+syntax = "proto3";
+
+
+package api.im_cloud.user.v2;
+
+
+option go_package = "github.com/spark-comm/spark-api/api/im_cloud/user/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.im_cloud.user.v2";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "common/model/user/v2/user.proto";
+enum Switch {
+  Close = 0; //关闭
+  Open = 1; //开启
+}
+enum UserOption {
+  notLoginStatus = 0;// 禁止登录
+  isOpenMoments = 1; //是否公开朋友圈
+  qrCodeAdd = 2; //是否开启二维码
+  cardAdd = 3; //是否开启名片
+  groupAdd = 4; //是否开启群添加
+  codeAdd = 5; //开启code
+  phoneAdd = 6; //开启手机号
+  showLastLogin = 7; //好友是否可见我的上线时间
+  multipleDeviceLogin = 8; //是否允许多设备登陆
+  isAdmin = 9; //是否管理员账号
+  isOpenWallet = 10; // 是否开启钱包
+  appMangerLevel = 11;// 应用管理等级
+  globalRecvMsgOpt = 12; // 0：正常；1：不接受消息；2：接受在线消息不接受离线消息；
+  isReal = 13; //是否实名
+  isCustomerService = 14; // 是否客服账号
+  isTenant = 15; // 是否租户
+  isSetPrivatePassword = 16; //是否设置私密对话密码,1-是 0-否
+  welcomeMessage = 17; //客服配置的欢迎语
+  //reserved "notLoginStatus","isOpenMoments","qrCodeAdd","cardAdd","groupAdd","codeAdd","phoneAdd","showLastLogin","multipleDeviceLogin","isAdmin","qrCodeAdd","appMangerLevel"."globalRecvMsgOpt";
+}
+service Profile {
+  // 获取用户信息 存在
+  rpc GetProfile (GetProfileReq) returns (GetProfileReply);
+  // 更新用户新 存在
+  rpc UpdateProfile (UpdateProfileReq) returns (UpdateProfileReply);
+  // 用户配置项 存在
+  rpc SetOption (SetOptionReq) returns (SetOptionReply);
+  // 获取配置项的值 存在
+  rpc GetOptionVal (GetOptionValReq) returns (GetOptionValReply);
+  //根据ids获取用户信息 存在
+  rpc FindProfileByUserId (FindProfileByUserReq) returns (FindProfileByUserReply);
+  //根据ids获取完整的用户信息不过过滤删除和和租户 存在
+  rpc FindFullProfileByUserId (FindFullProfileByUserIdReq) returns (FindFullProfileByUserIdReply);
+  //获取用户全局消息配置项 存在
+  rpc GetGlobalReceiveMessageOpt (GetGlobalReceiveMessageOptReq) returns (GetGlobalReceiveMessageOptReply);
+  //搜索用户 存在
+  rpc SearchProfile (SearchProfileReq) returns (SearchProfileReply);
+  // 获取所有的用户id 存在
+  rpc GetAllUserID (GetAllUserIDReq)returns (GetAllUserIDReply);
+}
+
+
+/*
+    搜索用户 存在
+    -------------------------------------------
+ */
+message SearchProfileReq {
+  string search_value = 1; // 手机号或者用户ID
+  int32 type = 2;// 1-手机 2-用户ID 3-扫码 4-身份证号 5-邮箱
+}
+
+message SearchProfileReply {
+   api.common.model.user.v2.UserProfile data = 1; // 用户信息
+}
+
+/*
+    根据id获取用户信息 存在
+    -------------------------------------------
+ */
+message FindProfileByUserReq {
+  repeated string userIds = 1; // 用户 id 数组
+}
+
+message FindProfileByUserReply {
+  repeated api.common.model.user.v2.UserProfile list = 1; // 用户信息列表
+}
+
+/*
+    根据ids获取完整的用户信息不过过滤删除和和租户 存在
+    -------------------------------------------
+ */
+message FindFullProfileByUserIdReq {
+  repeated string userIds = 1; // 用户 id 数组
+}
+
+message FindFullProfileByUserIdReply {
+  repeated api.common.model.user.v2.UserProfile list = 1; // 用户信息列表
+}
+
+
+/*
+    更新用户信息 存在
+    -------------------------------------------
+ */
+message UpdateProfileReq {
+  string userId = 1; // 用户 id
+  optional string faceURL = 2; // 头像
+  optional string nickname = 3; // 昵称
+  optional int32 gender = 4; // 性别 1：女 2：男
+  optional string message = 5; // 简介
+  optional string phone = 6; //  电话
+  optional string email = 7; // 邮箱
+  optional int64 birth = 9; // 生日
+  optional uint32 IsOpenMoments = 10; // 是否公开朋友圈 1公开 2不公开
+}
+message UpdateProfileReply {
+  api.common.model.user.v2.UserProfile profile = 1;
+}
+
+/*
+    获取用户信息 存在
+    -------------------------------------------
+ */
+message GetProfileReq {
+  string userId = 1; // 用户id
+  string account = 2;  // 账号
+  string code = 3;  // 编码
+  string phone = 4; // 手机号或账号
+  string emil = 5; // 用户邮箱
+}
+message GetProfileReply {
+  api.common.model.user.v2.UserProfile profile = 1;
+}
+/*
+    用户配置项 存在
+    -------------------------------------------
+ */
+message SetOptionReq {
+  string userId = 1; // 用户 id
+  UserOption option = 2; // 配置项类型
+  int32 value = 3; // 值
+}
+message SetOptionReply {
+
+}
+/*
+    查询用户配置项的值 存在
+    -------------------------------------------
+ */
+message GetOptionValReq {
+  string userId = 1; // 用户 id
+  UserOption option = 2; // 配置项类型
+}
+message GetOptionValReply {
+  int32 value = 1; // 开启/关闭
+}
+/*
+    获取用户全局消息配置项 存在
+    -------------------------------------------
+ */
+message GetGlobalReceiveMessageOptReq {
+  string userId = 1; // 用户 id
+}
+message GetGlobalReceiveMessageOptReply {
+  int32 globalRecvMsgOpt = 1; // 0：正常；1：不接受消息；2：接受在线消息不接受离线消息；
+}
+
+/*
+    获取用户列表 存在
+    -------------------------------------------
+ */
+message GetAllUserIDReq {
+}
+message GetAllUserIDReply {
+  repeated string userIds = 1;
+}

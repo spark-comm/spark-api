@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+// 定义包名
+package api.user_center.auth.v2;
+import "errors/errors.proto";
+
+option go_package = "github.com/spark-comm/spark-api/api/user_center/auth/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.user_center.auth.v2";
+// 错误
+enum ErrorReason {
+    // 设置缺省错误码
+    option (errors.default_code) = 500;
+
+    // 为某个枚举单独设置错误码
+    REASON_PARAMS = 0 [(errors.code) = 400]; // 参数错误
+    REASON_SYSTEM = 1 [(errors.code) = 500]; // 系统错误
+
+    REASON_NAME_OR_PASSWORD = 2 [(errors.code) = 400]; // 用户名或者密码错误
+    REASON_CODE_IS_INVALID = 3 [(errors.code) = 400]; // 验证码错误
+
+    REASON_LOGIN_STATUS = 4  [(errors.code) = 500]; // 登录失败,用户状态异常
+
+    REASON_TOKEN_VERIFY = 5  [(errors.code) = 400]; // token 验证失败
+    REASON_TOKEN_REFRESH = 6  [(errors.code) = 400]; // token 刷新失败
+
+    REASON_CODE_TYPE = 7 [(errors.code) = 400]; // 验证码类型错误
+    // 验证码错误
+    REASON_VERIFY_CODE_ERROR = 8 [(errors.code) = 400];//REASON
+
+    // 用户禁用
+    USER_DISABLE_LOGIN = 9 [(errors.code) = 500];
+    // 验证码已过期
+    VERIFICATION_CODE_HAS_EXPIRED = 10 [(errors.code) = 500];
+    // 注册账号失败
+    REGISTER_ACCOUNT_ERROR = 11 [(errors.code) = 500];
+    // 更新密码失败
+    UPDATE_ACCOUNT_PASSWORD_ERROR = 12 [(errors.code) = 500];
+    //用户不存在
+    USER_NOT_FOND = 13 [(errors.code) = 500];
+    // 密码为空
+    PASSWORD_IS_EMPTY = 14 [(errors.code) = 400];
+    // 用户已经实名认证过
+    USER_HAD_REAL_NAMED = 15 [(errors.code) = 400];
+    // 身份证号已被其他账号绑定
+    ID_CARD_HAS_BIND_TO_ANOTHER = 16 [(errors.code) = 400];
+    // 实名认证失败
+    REAL_NAME_FAILED = 17 [(errors.code) = 500];
+    // 身份认证接口调用失败
+    CALL_IDENTIFY_INTERFACE_FAILED = 18 [(errors.code) = 500];
+    //输入手机号与当前绑定手机号码不一致
+    INPUT_PHONE_NOT_IS_USER_BINDING_PHONE = 19 [(errors.code) = 400];
+    // 邮箱格式不正确
+    EMAIL_FORMAT_IS_CORRECT = 20 [(errors.code) = 400];
+    // 邮箱绑定失败
+    MAIL_BINDING_ERROR = 21 [(errors.code) = 500];
+    // 手机号绑定失败
+    PHONE_BINDING_ERROR = 22 [(errors.code) = 500];
+    REASON_TOKEN_DESTRUCTION = 23  [(errors.code) = 400]; // token 作废失败
+    REASON_TOKEN_VERIFY_ERROR = 24 [(errors.code) = 400]; //token验证失败
+    REASON_TOKEN_HAS_EXPIRED = 25 [(errors.code) = 400]; //token过期
+    REASON_GENERATE_TOKEN_ERROR = 26 [(errors.code) = 500]; //token生成失败
+    UNSUPPORTED_VERIFICATION_TYPE = 27 [(errors.code) = 400]; //不支持的验证方式
+    // 手机号错误
+    PHONE_ERROR = 28 [(errors.code) = 400];
+    // 手机号错误
+    EMAIL_ERROR = 29 [(errors.code) = 400];
+    // 发送验证码失败
+    SEND_CODE_ERROR = 30 [(errors.code) = 500];
+    // 推广码无效
+    THIS_SHARE_CODE_IS_INVALID= 31 [(errors.code) = 400];
+    // 身份核验不一致
+    INCONSISTENT_IDENTITY_VERIFICATION = 32  [(errors.code) = 400];
+    // 邮箱已被绑定
+    THE_EMAIL_HAS_BEEN_BOUND = 33 [(errors.code) = 400];
+    // 无可用的节点信息
+    NO_AVAILABLE_SERVERS= 34[(errors.code) = 400];
+    //不支持的平台
+    UNSUPPORTED_PLATFORMS = 35 [(errors.code) = 400];
+    REASON_AUTHORIZATION_CODE_ERROR = 36 [(errors.code) = 500]; //生产授权码失败
+    // 获取服务节点错误
+    GET_SERVERS_NODE_ERR= 37[(errors.code) = 500];
+    // 获取平台节点错误
+    GET_PLATFORM_NODE_ERR= 38[(errors.code) = 500];
+    // 同步用户信息失败
+    SYNC_USER_INFO_ERR = 39[(errors.code) = 500];
+    // 用户未加入节点
+    USER_NOT_JOIN_NODE=40[(errors.code) = 400];
+}

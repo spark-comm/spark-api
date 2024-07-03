@@ -1,0 +1,216 @@
+syntax = "proto3";
+
+package api.user_center.auth.v2;
+
+import "validate/validate.proto";
+import "common/enum/v2/enums.proto";
+import "common/model/v2/node.proto";
+option go_package = "github.com/spark-comm/spark-api/api/user_center/auth/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.user_center.auth.v2";
+
+// 注册/登录 的账号类型
+enum RegisterType {
+    REGISTER_TYPE_PHONE = 0; // 手机号
+    REGISTER_TYPE_EMAIL = 1;// 邮箱
+    REGISTER_TYPE_USER = 2; // 用户名
+}
+
+enum AccountType {
+    ACCOUNT_TYPE_USER_PASSWORD = 0; // 用户名+密码
+    ACCOUNT_TYPE_PHONE_CODE = 1; // 手机号+验证码
+    ACCOUNT_TYPE_PHONE_PASSWORD = 2; // 手机号+密码
+    ACCOUNT_TYPE_EMAIL_CODE = 3;// 邮箱+验证码
+    ACCOUNT_TYPE_EMAIL_PASSWORD = 4;// 邮箱+密码
+}
+
+// 验证码类型
+enum CodeType {
+    CODE_TYPE_PHONE = 0; // 手机验证码
+    CODE_TYPE_EMAIL = 1; // 邮箱验证码
+}
+// 认证类型
+enum AuthorizeType {
+    AUTHORIZE_CODE = 0; //授权码
+    AUTHORIZE_TOKEN = 1; //token
+}
+// 授权 token
+message AuthToken {
+    string accessToken = 1;
+    string refreshToken = 2;
+    int64 expiresAt = 3;
+    int64 refExpiresAt = 4;
+    string serverCode = 5;
+    string userId = 6;
+    map<string,string> options = 7; //更多参数
+}
+
+// 注册
+service Auth {
+    // 账号注册
+    rpc Register (RegisterReq) returns (RegisterReply);
+    // 账号登录
+    rpc Login (LoginReq) returns (LoginReply);
+    // 刷新 token
+    rpc RefToken (RefTokenReq) returns (RefTokenReply);
+    // 验证 token
+    rpc VerifyToken (VerifyTokenReq) returns (VerifyTokenReply);
+    // 销毁token
+    rpc DestructionToken (DestructionTokenReq) returns (DestructionTokenReply);
+    // 发送验证码
+    rpc SendCode (SendCodeReq) returns (SendCodeReply);
+    // 验证 code
+    rpc VerifyCode (VerifyCodeReq) returns (VerifyCodeReply);
+    // 修改密码
+    rpc UpdatePassword (UpdatePasswordReq) returns (UpdatePasswordReply);
+    // 实名认证
+    rpc RealNameAuth (RealNameAuthReq) returns (RealNameAuthReply);
+    // 绑定手机号或邮箱
+    rpc Binding(BindingReq) returns (BindingReply);
+}
+
+
+
+// 账号注册
+message RegisterReq {
+    string account = 1 [(validate.rules).string.min_len = 1]; //手机号/账号/邮箱
+    string password = 2 [(validate.rules).string = {min_len: 8,max_len: 16}];// 密码
+    string proof = 3 [(validate.rules).string.min_len = 4, (validate.rules).string.max_len = 16];// 登录凭证 可以是验证码或者密码  根据 AccountType 区分
+    RegisterType register_type = 4; // 注册类型类型 0:手机号 1:邮箱 2:账号
+    string platform = 5;// 来源终端，IOS Android Windows OSX Web MiniWeb Linux
+    string nickname = 6; // 昵称
+    int32 areaCode = 7; // 区号
+    string shareCode = 8; // 推广码
+    string faceURL = 9;// 头像
+    api.common.enum.v2.Gender gender = 10 [(validate.rules).enum = {defined_only: true}]; // 性别；0:未知 1:男 2:女
+    int64 birth = 11; // 生日
+    string key = 12; // 验证码的key
+}
+message RegisterReply {
+    string userId = 1 [(validate.rules).string = {min_len: 1}]; // 用户id
+}
+
+// 账号登录
+message LoginReq {
+    string account = 1 [(validate.rules).string.min_len = 1]; //手机号或账号
+    string proof = 2 [(validate.rules).string.min_len = 4, (validate.rules).string.max_len = 16];// 登录凭证 可以是验证码或者密码  根据 AccountType 区分
+    AccountType accountType = 3;//登录的账号类型 0:用户名+密码 1:手机号+验证码 2:手机号+密码 3:邮箱+验证码 4:邮箱+密码
+    AuthorizeType responseType = 4; //响应的类型 0:授权码 1:token
+    string platform = 5 ;// 来源终端，IOS Android Windows OSX Web MiniWeb Linux
+    string node =6; // 节点 id
+    repeated string scope = 7; // 申请的权限
+    bool resNodeInfo = 8; //是否需要显示节点信息
+    string key = 12; // 验证码的key
+}
+message LoginReply {
+    AuthToken authToken = 1; //token
+    string authorizationCode = 2; //授权码
+    api.common.model.v2.NodeBase node =3; //节点信息
+    repeated string managers = 4; //平台节点信息
+}
+
+// 销毁token
+message DestructionTokenReq{
+    string accessToken = 1 [(validate.rules).string.min_len = 1]; // access token
+}
+message DestructionTokenReply {
+
+}
+
+// token 刷新
+message RefTokenReq {
+    string refToken = 1 [(validate.rules).string.min_len = 1]; // 刷新 token
+    bool resNodeInfo = 2; //是否需要显示节点信息
+    string node =3;// 节点 id
+}
+message RefTokenReply {
+    AuthToken authToken = 1;
+    api.common.model.v2.NodeBase node =2; //节点信息
+    repeated string managers = 3; //平台节点信息
+}
+
+// token 验证
+message VerifyTokenReq {
+    string accessToken = 1 [(validate.rules).string.min_len = 1]; // 验证 token
+    AuthorizeType authorizeType = 2; //认证类型；0 授权码 1 token
+}
+message VerifyTokenReply {
+    AuthToken authToken = 1;
+}
+
+// 发送验证码
+message SendCodeReq {
+    string account = 1 [(validate.rules).string.min_len = 1];
+    CodeType codeType = 2; //验证码类型 0:手机验证码 1:邮箱验证码
+    int64 areaCode = 3;
+}
+message SendCodeReply {
+    int64 seconds = 1; // 有效时长
+    int64 expiresAt = 2; // 失效时间戳
+    string key=3; //验证码返回的key
+}
+
+// 验证code
+message VerifyCodeReq {
+    string account = 1 [(validate.rules).string.min_len = 1];
+    CodeType codeType = 2; //验证码类型 0:手机验证码 1:邮箱验证码
+    string code = 3 [(validate.rules).string = {min_len: 4,max_len: 8}];
+    string key=4; //验证码返回的key
+}
+message VerifyCodeReply {
+    bool pass = 1;
+}
+
+// 修改密码
+message UpdatePasswordReq {
+    string userId = 1 [(validate.rules).string = {min_len: 1}]; // 用户id
+    string password = 2 [(validate.rules).string.min_len = 8, (validate.rules).string.max_len = 16]; // 密码
+    string proof = 3 [(validate.rules).string.min_len = 4, (validate.rules).string.max_len = 16];// 登录凭证 可以是验证码或者密码  根据 AccountType 区分
+    CodeType codeType = 4; // //验证码类型 0:手机验证码 1:邮箱验证码
+    string account = 5; //发送验证码的邮箱或手机账号
+    string key=6; //验证码返回的key
+    string nodeId =7; // 节点 id
+}
+message UpdatePasswordReply {
+}
+
+// RealNameAuthReq 实名认证
+message RealNameAuthReq {
+    string userId = 1; // 用户 id
+    string fullName = 2 [(validate.rules).string.min_len = 1]; // 姓名
+    string personId = 3 [(validate.rules).string.min_len = 1]; // 身份证号
+    string realPhone = 4; // 真实手机
+}
+
+message RealNameAuthReply {
+
+}
+
+/*
+    单点登录
+    -------------------------------------------
+ */
+message SSOLoginReq {
+    string account = 1 [(validate.rules).string.min_len = 1]; //手机号或账号
+    string token = 2;//平台的token
+    string platform = 3;// 来源终端，IOS Android Windows OSX Web MiniWeb Linux;
+}
+message SSOLoginReply {
+    AuthToken authToken = 1;
+}
+
+/*
+    绑定
+    -------------------------------------------
+ */
+message BindingReq {
+    string id = 1; //主键
+    string account = 2 [(validate.rules).string.min_len = 1];
+    CodeType codeType = 3; //验证码类型 0:手机验证码 1:邮箱验证码
+    int64 areaCode = 4;
+    string code = 5 [(validate.rules).string = {min_len: 4,max_len: 8}];
+    string key=6; //验证码返回的key
+}
+message BindingReply {
+
+}

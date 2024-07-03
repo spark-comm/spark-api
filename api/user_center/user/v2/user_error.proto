@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package api.user_center.user.v2;
+
+import "errors/errors.proto";
+
+option go_package = "github.com/spark-comm/spark-api/api/user_center/user/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.user_center.user.v2";
+
+// 错误
+enum ErrorReason {
+    // 设置缺省错误码
+    option (errors.default_code) = 500;
+
+    // 为某个枚举单独设置错误码
+    ERROR_REASON_PARAMS = 0 [(errors.code) = 400]; // 参数错误
+    ERROR_REASON_SYSTEM = 1 [(errors.code) = 500]; // 系统错误
+
+
+    ERROR_REASON_PASSWORD = 3 [(errors.code) = 400]; // 密码错误
+    ERROR_REASON_NAME_IS_EXIST = 4 [(errors.code) = 400]; // 用户名已存在
+    ERROR_CREATE_USER = 5 [(errors.code) = 500]; // 创建用户失败
+    EMAIL_ALREADY_EXISTS = 6 [(errors.code) = 400]; // 邮箱已被使用
+    JOIN_NODE_ERR=7  [(errors.code) = 500];//加入社区失败
+    // 推广码无效
+    THIS_SHARE_CODE_IS_INVALID= 8 [(errors.code) = 400];
+    USER_ALREADY_JOIN_NODE = 9 [(errors.code) = 500];
+    NODE_NOT_FANG=10  [(errors.code) = 400];//社区不存在
+}

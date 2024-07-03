@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package api.common.model.v2;
+
+option go_package = "github.com/spark-comm/spark-api/api/common/model/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.common.model.v2";
+import "validate/validate.proto";
+
+// 分页
+message Pagination{
+	int32 no = 1;
+	int32 size = 2;
+}
+
+message Conn {
+	//ws的rpc地址
+	string rpcAddr=1;
+	//平台 IOS Android Windows OSX Web MiniWeb Linux
+	string 	platform=2;
+	//用户id
+	string  userID=3;
+	//用户token
+	string  token=4;
+	//链接唯一id
+	string  connID=5;
+	bool  isBackground=6; //是否后台运行
+	string language=7; //客户端默认语言
+	string tenantId=8; //用户租户
+}
+// 设置后台运行
+message SetBackgroundStatusReq{
+	bool isBackground=1;
+}
+// 设置客户端语言
+message SetLanguageReq{
+	string language=1  [(validate.rules).string.min_len=1];
+}
+//加密返回
+message EncryptionReply{
+	int32 code = 1;//网络状态
+	string msg = 2;//错误信息
+	string reason = 3;//错误原因
+	SingedMsg data = 4;//加密数据
+}
+// 签名请求参数
+message  SingedMsg {
+	string data =1; // 加密数据
+	string sign =2; // 签名
+}
+// 上报数据
+message EscalationData{
+	string nodeId = 1; //节点id
+	SingedMsg data = 2; //上报数据
+}

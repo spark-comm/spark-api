@@ -1,0 +1,191 @@
+syntax = "proto3";
+
+package api.user_center.user.v2;
+
+import "validate/validate.proto";
+import "common/model/v2/conn.proto";
+import "common/enum/v2/enums.proto";
+option go_package = "github.com/spark-comm/spark-api/api/user_center/user/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.user_center.user.v2";
+// 用户信息
+message UserProfile {
+    string id = 1; // profile id 和 userId 等价
+    string faceURL = 2; // 头像地址
+    string nickname = 3; // 昵称
+    string account = 4; // 账号
+    string code = 5; // 用户code
+    string phone = 6; // 电话
+    api.common.enum.v2.Gender gender = 7; // 性别
+    string shareCode = 8; // 分享码
+    string email = 9; // 邮箱
+    int64 birth = 10; // 生日
+    string fullName = 11; // 真实名称
+    string personId = 12; // 身份证号
+    int64 createdAt = 13; // 创建时间
+    int64 updatedAt = 14; // 更新时间
+    int64 deletedAt = 15; // 删除时间
+    int32 areaCode = 16; //手机区号
+    int32 status    = 17;// 账户状态 1 -> 正常,2->冻结
+    string tenantId = 18;// 租户id
+    string nodeId = 19; //用户注册节点
+    string lastLoginNodeId = 20; //上次登录节点
+}
+// Profile 服务
+service Profile {
+    // 基本接口
+    // 获取用户信息
+    rpc GetProfile (GetProfileReq) returns (GetProfileReply);
+    // 更新用户新
+    rpc UpdateProfile (UpdateProfileReq) returns (UpdateProfileReply);
+    // 获取用户列表
+    rpc ListProfile (ListProfileReq) returns (ListProfileReply);
+    // 获取用户列表
+    rpc GetList (GetListReq) returns (GetListReply);
+    // 根据账号获取用户信息
+    rpc GetByAccount (GetByAccountReq) returns (GetByAccountReply);
+    // 根据手机号获取用户信息
+    rpc GetByPhone (GetByPhoneReq) returns (GetByPhoneReply);
+    // 根据邮箱获取用户信息
+    rpc GetByEmail (GetByEmailReq) returns (GetByEmailReply);
+    // 根据code获取用户信息
+    rpc GetByCode (GetByCodeReq) returns (GetByCodeReply);
+    // 工具方法
+    //根据ids获取用户信息
+    rpc FindProfileByUserId (FindProfileByUserReq) returns (FindProfileByUserReply);
+    //批量插入
+    rpc BatchInsert (BatchInsertProfileReq) returns (BatchInsertProfileReply);
+    //是否实名
+    rpc IsReal (IsRealReq) returns (IsRealReply);
+}
+/*
+    根据账号获取用户信息
+    -------------------------------------------
+ */
+message GetByAccountReq {
+    string account = 1[(validate.rules).string.min_len = 6]; //账号
+}
+message GetByAccountReply {
+    UserProfile profile = 1; //用户信息
+}
+
+/*
+    根据手机号获取用户信息
+    -------------------------------------------
+ */
+message GetByPhoneReq {
+    string phone = 1; //手机号
+}
+message GetByPhoneReply {
+   repeated UserProfile profiles = 1; //用户信息
+}
+
+/*
+    根据邮箱获取用户信息
+    -------------------------------------------
+ */
+message GetByEmailReq {
+    string email = 1; //手机号
+}
+message GetByEmailReply {
+    UserProfile profile = 1; //用户信息
+}
+/*
+    根据邮箱获取用户信息
+    -------------------------------------------
+ */
+message GetByCodeReq {
+    string code = 1; //编码
+}
+message GetByCodeReply {
+    UserProfile profile = 1; //用户信息
+}
+// 根据ids获取用户信息
+message FindProfileByUserReq {
+    repeated string userIds = 3; // 用户 id 数组
+    string nodeId =4; // 节点 id
+}
+
+message FindProfileByUserReply {
+    repeated UserProfile data = 1;
+}
+
+
+// 更新用户信息
+message UpdateProfileReq {
+    string userId = 1 [(validate.rules).string.min_len = 1]; // 用户id
+    optional  string faceURL = 2; // 头像地址
+    optional  string nickname = 3; // 昵称
+    optional  api.common.enum.v2.Gender gender = 4; // 性别
+    optional  string message = 5; // 签名
+    optional  string phone = 6; // 电话
+    optional string email = 7; // 邮箱
+    optional  int64 birth = 9; // 生日
+    optional string nodeId =10; // 节点 id
+    optional string fullName = 11; // 真实名称
+    optional string personId = 12; // 身份证号
+    optional string lastNodeId = 13; // 最后一次登录节点id
+    optional int32  status =14; //用户状态
+}
+message UpdateProfileReply {
+
+}
+
+
+
+// 获取用户信息
+message GetProfileReq {
+    string userId = 1; //用户id
+    repeated string selectStr = 2 ;// 目标字段的数组
+}
+message GetProfileReply {
+    UserProfile profile = 1;
+}
+
+
+// 获取用户列表
+message ListProfileReq {
+    api.common.model.v2.Pagination page=1; //分页信息
+    bool isLimit = 2; // 是否分页 false:（返回全部） true:（会通过 size 和 num 进行分页）
+    repeated string selectStr = 3;// 目标字段的数组
+    map<string, string> cond = 4; //直接赋值判定条件
+    repeated string supplement = 5;//补充条件
+    string nodeId =6; // 节点 id
+}
+message ListProfileReply {
+    int64 total = 1;
+    repeated UserProfile list = 2;
+}
+// 获取用户列表
+message GetListReq {
+    api.common.model.v2.Pagination page=1; //分页信息
+    optional string nickname = 2; // 昵称
+    optional string account = 3; // 账号
+    optional string code = 4; // 用户code
+    optional string phone = 5; // 电话
+    optional string email = 6; // 邮箱
+    optional string fullName = 7; // 真实名称
+    optional string personId = 8; // 身份证号
+}
+message GetListReply {
+    int64 total = 1;
+    repeated UserProfile list = 2;
+}
+// 批量插入
+message BatchInsertProfileReq {
+    string nodeId =1; // 节点 id
+    repeated UserProfile list = 2 ;// 插入的数据
+}
+message BatchInsertProfileReply {
+
+}
+
+
+// 是否实名
+message IsRealReq {
+    string userId =1; // 节点 id
+    string idCard =2; // 身份证件
+}
+message IsRealReply {
+
+}

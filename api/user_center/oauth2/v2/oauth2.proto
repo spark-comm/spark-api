@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package api.user_center.oauth2.v2;
+
+import "user_center/auth/v2/auth.proto";
+
+option go_package = "github.com/spark-comm/spark-api/api/user_center/oauth2/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.user_center.oauth2.v2";
+
+// 授权 token
+//message AuthToken {
+//	string access_token = 1;
+//	string refresh_token = 2;
+//	int64 expires_at = 3;
+//	string user_id = 4;
+//}
+
+service Oauth2 {
+    //	rpc QrConnect (QrConnectRequest) returns (QrConnectReply){
+    //		option (google.api.http) = {
+    //			get: "/user/v2/oauth2/qr_connect",
+    //		};
+    //	};
+
+    rpc AccessToken (AccessTokenRequest) returns (AccessTokenReplay);
+
+//    rpc LastSyncTime (LastSyncTimeRequest) returns (QrConnectReply) {
+//        option (google.api.http) = {
+//            get: "/user/v2/oauth2/qr_connect",
+//        };
+//    };
+}
+
+message AccessTokenRequest {
+    string code = 1;
+    string secret = 2;
+    string node_id = 3;
+    //	string app_id = 3;
+    //	string grant_type = 4;
+}
+
+message AccessTokenReplay {
+    auth.v2.AuthToken auth_token = 1;
+}
+
+message QrConnectRequest {
+    string node_id = 1;
+    string redirect_uri = 2;
+    string response_type = 3;
+    string scope = 4;
+    string state = 5;
+}
+message QrConnectReply {
+
+}
+
+
+

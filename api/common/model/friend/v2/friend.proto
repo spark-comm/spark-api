@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package api.common.model.friend.v2;
+
+option go_package = "github.com/spark-comm/spark-api/api/common/model/friend/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.common.model.friend.v2";
+import "common/net/v2/net.proto";
+
+// 好友请求
+message FriendRequest {
+	string fromUserID = 1; //来源的用户id
+	string toUserID = 8; //接收方的用户id
+	string nickname = 9;//接收方的用户昵称
+	string faceURL = 10;//接收方的头像
+	string code = 11; //接收方的code
+	string message = 12;// 接收方的个性签名
+	string phone = 13;// 接收方的手机号
+	int32 gender = 14;// 接收方的性别
+	int32 handleResult = 15;//处理结果 0:待处理1:同意2；拒绝
+	string reqMsg = 16;//请求的消息
+	int64 createTime = 17;//发起时间
+	string handlerUserID = 18;//处理用户id
+	string handleMsg = 19;//处理备注
+	int64 handleTime = 20;//处理时间
+	string ex = 21;//扩展字段
+}
+// 好友信息
+message FriendInfo {
+	string ownerUserID = 1;      //本人uid
+	string friendUserID = 2;     //朋友uid
+	string nickname = 3;    //好友昵称
+	string phone = 4;       //好友手机号
+	string faceURL = 5;      //好友头像
+	string operatorUserID = 6;  //操作的id
+	string remark = 7;             // 好友备注
+	int64 createdAt = 8;         // 好友添加时间
+	string message = 9; //好友签名
+	string code = 10; //用户ID
+	string email = 11;//邮箱
+	int64 birth = 12;         //好友生日
+	int32 gender = 13;         //性别
+	int32  addSource = 14; //  添加来源
+	string ex = 15;//扩展字段
+	string backgroundUrl = 16;//背景图片
+	int32  notPeersFriend = 17;//关系断开
+	int32 isComplete = 18;//同步完成" json:"isComplete"`
+	int32 IsDestroyMsg = 19; //阅后即焚开关
+	int64 updateAt= 20;//更新时间
+}
+// 拉黑用户信息
+message BlackInfo {
+	string ex = 1; //扩展字段
+	string faceURL = 2; //头像
+	int32 gender = 3; //性别
+	string nickname = 4; //昵称
+	string blackUserID = 5; // 被拉黑的用户id
+	string code = 6; // 用户的编码
+	string message = 7; // 简介
+	int64 createdAt = 8; //拉黑时间
+	string ownerUserID = 9; // 所属用户id
+}
+

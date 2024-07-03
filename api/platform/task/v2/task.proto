@@ -1,0 +1,152 @@
+syntax = "proto3";
+
+package api.platform.task.v2;
+
+import "validate/validate.proto";
+import "common/model/v2/conn.proto";
+import "common/model/v2/user.proto";
+import "common/model/v2/node.proto";
+option go_package = "github.com/spark-comm/spark-api/api/platform/task/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.platform.task.v2";
+
+// 任务类型
+enum TaskType{
+    EXECUTE_IMMEDIATELY = 0; //立即单次执行
+    DELAY_EXECUTION =1; //延迟执行
+    TIMED_EXECUTION =2; //定时执行
+}
+
+// 任务内容类型
+enum TaskCountType{
+    unknown=0 ;
+    USER_INFO_DISTRIBUTE =1; //用户信息下发
+    USER_INFO_ESCALATION =2; //用户信息上报
+    NODE_INFO_DISTRIBUTE =3; //节点信息下发
+}
+// 任务所属模块
+enum TaskModel{
+    UNKNOWN_MODEL=0 ; //未知
+    USER=1; //用户模块任务
+    NODE=2; //任务模块任务
+}
+// 任务状态
+enum  TaskStatus{
+    UNKNOWN_STATUS=0 ; //未知
+    WAITING =1;//创建等待执行
+    IN_PROGRESS=2;//执行中
+    EXECUTION_FAILED =3; //执行失败
+    EXECUTION_SUCCEEDED=4; //执行成功
+}
+
+// Task 任务
+service Task {
+    // 新加任务
+    rpc Add (AddReq) returns (AddReply);
+    // 获取任务列表
+    rpc GetList (GetListReq) returns (GetListReply);
+    // 执行任务
+    rpc Execution (ExecutionReq)returns (ExecutionReply);
+    // 增加上报任务
+    rpc AddEscalation(AddEscalationReq)returns(AddEscalationReply);
+    // 下发用户
+    rpc DistributeUser(DistributeUserReq)returns(DistributeUserReply);
+}
+/*
+    新加任务
+    -------------------------------------------
+ */
+message AddReq {
+    int64 startTime = 1; //任务开始时间
+    string cron = 2; //定时表达式
+    TaskType taskType = 3; //任务类型
+    TaskModel taskModel = 4; //任务所属模块
+    bytes data = 5; //任务所需数据
+    string description = 6; //任务描述
+    TaskCountType contentType = 7; //任务内容类型
+}
+message AddReply {
+
+}
+/*
+    获取任务列表
+    -------------------------------------------
+ */
+message GetListReq {
+    api.common.model.v2.Pagination page = 1;//分页
+    TaskType taskType = 3; //任务类型 0:立即执行 1:延迟执行 3:定时执行
+    TaskModel taskModel = 4; //任务所属模块 0:系统任务 1:用户模块 2:节点模块
+    TaskStatus status = 5; // 状态  0:新建 1:等待执行 2:执行中 3:执行失败 4:执行成功
+}
+message GetListReply {
+    int64 total = 1; //总数
+    repeated TaskDetails list = 2; //任务详情
+}
+/*
+    获取任务列表
+    -------------------------------------------
+ */
+message ExecutionReq {
+    string id =1; //任务id
+}
+message ExecutionReply {
+}
+/*
+    增加上报任务
+    -------------------------------------------
+ */
+message AddEscalationReq {
+    int64 startTime = 1; //任务开始时间
+    string cron = 2; //定时表达式
+    TaskType taskType = 3;  //任务类型 0:立即执行 1:延迟执行 3:定时执行
+    TaskModel taskModel = 4; //任务所属模块 0:系统任务 1:用户模块 2:节点模块
+    api.common.model.v2.EscalationData data =  5; //加密
+    string description = 6; //任务描述
+    TaskCountType contentType = 7; //任务内容类型 0:未定义 1:用户信息下发 2:用户信息下发 3:节点信息下发
+}
+message AddEscalationReply {
+    api.common.model.v2.SingedMsg data =  1; //加密
+}
+/*
+    增加上报任务
+    -------------------------------------------
+ */
+message DistributeUserReq {
+    api.common.model.v2.SyncUser user =1; //用户信息
+}
+message DistributeUserReply {
+
+}
+
+message TaskDetails {
+    string id =1; //任务id
+    int64 startTime = 2; //任务开始时间
+    string cron = 3; //定时表达式
+    TaskType taskType = 4; //任务类型 0:立即执行 1:延迟执行 3:定时执行
+    TaskModel taskModel = 5; //任务所属模块 0:系统任务 1:用户模块 2:节点模块
+    bytes data = 6; //任务所需数据
+    string description = 7; //任务描述
+    TaskStatus status = 8; // 状态  0:新建 1:等待执行 2:执行中 3:执行失败 4:执行成功
+    TaskCountType contentType = 9; //任务内容类型 0:未定义 1:用户信息下发 2:用户信息下发 3:节点信息下发
+    string reason=10;//失败原因
+    int64 retryCount=11;//重试次数
+    int64 createdAt=12;//创建时间
+    int64 updatedAt=13;//更新时间
+
+}
+
+
+// 用户信息下发
+message  UserInfoDistribute{
+    string userId = 1; //用户id
+    string nodeId = 2;//节点id
+}
+// 用户信息上报
+message  UserInfoEscalation{
+    api.common.model.v2.EscalationData data = 1; //用户信息
+}
+
+// 节点信息下发
+message  NodeDistribute{
+    string nodeId = 1; //节点id
+}

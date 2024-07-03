@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package api.platform.node.v2;
+
+import "validate/validate.proto";
+import "common/enum/v2/enums.proto";
+option go_package = "github.com/spark-comm/spark-api/api/platform/node/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.platform.node.v2";
+// PlatformNodeInfo
+message PlatformNodeInfo {
+    int32 id = 1; // profile id 和 userId 等价
+    string address = 2; // 地址
+    int32  weight = 3; //节点权重
+}
+// PlatformNode 服务
+service PlatformNode {
+    // 新加节点
+    rpc Add (AddPlatformNodeReq) returns (AddPlatformNodeReply);
+    // 删除节点
+    rpc Del (DelPlatformNodeReq) returns (DelPlatformNodeReply);
+    // 编辑节点
+    rpc Edit (EditPlatformNodeReq) returns (EditPlatformNodeReply);
+    // 获取节点列表
+    rpc GetList (GetPlatformNodeListReq) returns (GetListPlatformNodeReply);
+    // 获取所有节点列表
+    rpc GetAllAddress (GetAllAddressReq) returns (GetAllAddressReply);
+}
+/*
+    新加节点
+    -------------------------------------------
+ */
+message AddPlatformNodeReq {
+    string address = 1; // 地址
+    int32  weight = 2; //节点权重
+}
+message AddPlatformNodeReply {
+    string nodeId = 1;
+}
+
+/*
+    删除节点
+    -------------------------------------------
+ */
+message DelPlatformNodeReq {
+    int32 id = 1; //节点id
+}
+message DelPlatformNodeReply {
+}
+
+
+/*
+    编辑节点
+    -------------------------------------------
+ */
+message EditPlatformNodeReq {
+    int32 id =1; //节点id
+    optional string address = 2; // 地址
+    optional int32  weight = 3; //节点权重
+}
+message EditPlatformNodeReply {
+
+}
+
+/*
+    获取节点列表
+    -------------------------------------------
+ */
+message GetPlatformNodeListReq {
+}
+message GetListPlatformNodeReply {
+    repeated PlatformNodeInfo list = 1; //节点详情
+}
+
+/*
+    获取所有节点列表
+    -------------------------------------------
+ */
+message GetAllAddressReq {
+}
+message GetAllAddressReply {
+    repeated string list = 1; //节点详情
+}
+
+

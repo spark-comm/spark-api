@@ -1,0 +1,122 @@
+syntax = "proto3";
+
+package api.im_cloud.access.v2;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "validate/validate.proto";
+import "common/model/v2/user.proto";
+import "common/model/v2/conn.proto";
+option go_package = "github.com/spark-comm/spark-api/api/im_cloud/access/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.im_cloud.access.v2";
+
+service Platform {
+			// 平台下发节点配置
+	   rpc DistributeMasterNodeConfig (DistributeMasterNodeConfigReq) returns (DistributeMasterNodeReply);
+		 // 平台下发代理节点配置
+	   rpc DistributeProxyNodeConfig (DistributeProxyNodeConfigReq) returns (DistributeProxyNodeConfigReply);
+		 rpc GetNodeKey(google.protobuf.Empty) returns(GetNodeKeyReply); // 获取节点私钥
+	   rpc GetNodeStatus(GetNodeStatusReq) returns(GetNodeStatusReply); // 获取节点状态
+	   rpc GetNodeFunction(google.protobuf.Empty) returns(GetNodeFunctionReply); // 获取节点共功能
+	   //平台下发用户信息
+	   rpc DistributeUser(DistributeUserReq)returns (DistributeUserReply);
+		 //上报用户信息
+	   rpc EscalationUser(EscalationUserReq)returns (EscalationUserReply);
+		 //更新用户中心的账号密码
+	   rpc UpdateCenterUserPassword(UpdateCenterUserPasswordReq)returns (UpdateCenterUserPasswordReply);
+			//注销账号
+			rpc CancelAccount(CancelAccountReq)returns (CancelAccountReply);
+}
+
+/*
+    主节点下发节点配置
+    -------------------------------------------
+ */
+message DistributeMasterNodeConfigReq {
+	string data = 1 [(validate.rules).string.min_len = 1]; // 数据 使用解密后的 aes 密钥进行解密
+	string nodeId = 2; // 节点 id
+}
+message  DistributeMasterNodeReply {
+	api.common.model.v2.SingedMsg data = 1; // 签名
+}
+/*
+    代理节点下发节点配置
+    -------------------------------------------
+ */
+message DistributeProxyNodeConfigReq {
+	string nodeId = 1; // 节点 id
+	string data = 2;// 数据
+	string sign = 3;// 签名
+}
+message  DistributeProxyNodeConfigReply {
+	api.common.model.v2.SingedMsg data = 1; // 签名
+}
+
+/*
+    获取主节点状态
+    -------------------------------------------
+ */
+message GetNodeStatusReq {
+	string tenantId = 1; // 租户 id
+}
+message GetNodeStatusReply {
+	bool enable = 1; // 节点是否可用
+	string reason = 2; // 不可用原因
+}
+/*
+    主节点低私钥
+    -------------------------------------------
+ */
+message GetNodeKeyReply {
+	string priKey = 1; // 节点私钥
+}
+
+// 获取私有节点功能返回参数
+message  GetNodeFunctionReply {
+	repeated string functions =1; // 节点功能列表
+}
+
+/*
+    用户下发
+    -------------------------------------------
+ */
+message DistributeUserReq {
+	string data = 1 [(validate.rules).string.min_len = 1]; // 数据 使用解密后的 aes 密钥进行解密
+	string nodeId = 2; // 节点 id
+	string sign = 3;// 签名
+}
+message  DistributeUserReply {
+	api.common.model.v2.SingedMsg data = 1; // 签名
+}
+/*
+    用户上报
+    -------------------------------------------
+ */
+message EscalationUserReq {
+	string userId = 1 [(validate.rules).string.min_len = 1]; // 用户ID
+	string nodeId = 2; // 节点 id
+}
+message  EscalationUserReply {
+}
+
+/*
+    更新密码
+    -------------------------------------------
+ */
+message UpdateCenterUserPasswordReq {
+	string userId = 1 [(validate.rules).string.min_len = 1]; // 用户ID
+	string password = 2; // 密码
+}
+message  UpdateCenterUserPasswordReply {
+}
+
+/*
+    注销账号
+    -------------------------------------------
+ */
+message CancelAccountReq {
+	string userId = 1 [(validate.rules).string.min_len = 1]; // 用户ID
+}
+message  CancelAccountReply {
+}

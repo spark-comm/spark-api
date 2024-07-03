@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package api.common.enum.v2;
+
+option go_package = "github.com/spark-comm/spark-api/api/common/enum/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.common.enum.v2";
+//账号类型
+enum AccountType {
+	Phone = 0; //手机号
+	Email = 1;//邮箱
+	UserName = 2; //用户名密码注册
+}
+enum Gender {
+	GENDER_UNKNOWN = 0;// 未知
+	GENDER_FEMALE = 1;// 男
+	GENDER_MALE = 2; // 女
+}
+// 账号状态
+enum AccountStatus {
+	ACCOUNT_STATUS_UNKNOWN = 0;// 状态未知
+	ACCOUNT_STATUS_NORMAL = 1;// 状态正常
+	ACCOUNT_STATUS_FREEZE = 2; // 状态冻结
+}

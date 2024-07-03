@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+// 定义包名
+package api.im_cloud.group.v2;
+import "errors/errors.proto";
+
+option go_package = "github.com/spark-comm/spark-api/api/im_cloud/group/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.im_cloud.group.v2";
+enum GroupErrorReason {
+  // 设置缺省错误码
+  option (errors.default_code) = 500;
+
+  // 获取群信息失败
+  GET_GROUP_INFO_FAIL = 0 [(errors.code) = 510];
+  // 群成员数量不应超过最大限制
+  GROUP_MEMBER_NUM_TOO_MANY = 1 [(errors.code) = 512];
+  // 创建群聊失败
+  CREATE_GROUP_FAIL = 2 [(errors.code) = 515];
+  // 禁言群失败
+  MUTE_GROUP_FAIL = 3 [(errors.code) =  513];
+  // 禁言群成员失败
+  MUTE_GROUP_MEMBER_FAIL= 4 [(errors.code) =  514];
+  // 获取群成员信息失败
+  GET_GROUP_MEMBER_FAIL = 5 [(errors.code) =  511];
+  // 群成员数量不应少于2人
+  GROUP_MEMBER_NUM_TOO_LITTLE = 6 [(errors.code) = 501];
+  // 取消禁言群失败
+  CANCEL_MUTE_GROUP_FAIL = 7 [(errors.code) = 506];
+  // 取消禁言群成员失败
+  CANCEL_MUTE_GROUP_MEMBER_FAIL = 8 [(errors.code) = 508];
+  // 没有权限操作该信息
+  NO_PERMISSION_OPERATION_GROUP_INFO = 9 [(errors.code) = 577];
+  // 解散群失败
+  DISMISS_GROUP_FAIL = 10 [(errors.code) = 511];
+  // 更新群/群成员数据失败
+  UPDATE_GROUP_DATA_FAIL = 11 [(errors.code) = 512];
+  // 需要实名认证
+  NEED_REAL_NAME_AUTHENTICATION = 12 [(errors.code) = 515];
+  // 加入群聊失败
+  JOIN_GROUP_REQ_FAIL = 13 [(errors.code) = 513];
+  // 删除缓存信息失败
+  DELETE_RC_CACHE_FAIL = 14 [(errors.code) = 588];
+  // 设置群成员数量应大于当前人数且不小于3人
+  SETTING_GROUP_MEMBER_MEMBERCOUNT_FAIL = 15 [(errors.code) = 514];
+  // 添加群管理失败
+  SETTING_GROUP_ADMIN_FAIL = 16 [(errors.code) = 516];
+  // 踢出群成员失败
+  KICK_GROUP_MEMBER_FAIL = 17 [(errors.code) = 525];
+  // 推出群聊失败
+  MEMBER_QUIT_GROUP_FAIL = 18 [(errors.code) = 517];
+  // 请求处理失败
+  HANDLE_APPLICIATION_REQUEST_FAIL = 19 [(errors.code) = 570];
+  // 上传文件失败
+  UPLOAD_GROUP_FEIL_FAIL = 20  [(errors.code) = 518];
+  // 获取群文件列表数据失败
+  GET_GROUP_FEIL_LIST_FAIl = 21 [(errors.code) = 519];
+  // 获取请求数据失败
+  GET_REQUEST_DATA_INFO_FAIL = 22 [(errors.code) = 517];
+  // 获取踢出群成员数据信息失败
+  GET_KICK_GROUP_MEMBER_FAIL = 23 [(errors.code) = 525];
+  // 获取加群信息失败
+  GET_JOIN_GROUP_REQUEST_FAIL = 24 [(errors.code) = 513];
+  // 转让群失败
+  TRANSFER_GROUP_ERROR = 25 [(errors.code) = 507];
+  // 申请已经发起，请勿重复请求
+  THE_APPLICATION_HAS_BEEN_INITIATED_DO_NOT_REPEAT = 26 [(errors.code) = 519];
+  // 获取最大未处理的加群请求失败
+  GET_UNTREATED_GROUP_APPLICATION_LIST_FAIL=27 [(errors.code) = 520];
+  // 该群暂未公开
+  GROUP_IS_NOT_OPEN=28 [(errors.code) = 400];
+  // 该群暂未公开
+  YOU_ARE_ALREADY_IN_THE_GROUP=29 [(errors.code) = 400];
+  // 群不存在
+  GROUP_IS_NOT_FOND=30 [(errors.code) = 400];
+  //群请求已经处理
+  HANDLE_APPLICATION_HANDS_FINISH = 31[(errors.code) = 505];
+}

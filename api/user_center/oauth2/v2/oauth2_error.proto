@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package api.user_center.oauth2.v2;
+
+import "errors/errors.proto";
+
+option go_package = "github.com/spark-comm/spark-api/api/user_center/oauth2/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.user_center.oauth2.v2";
+
+// 错误
+enum ErrorReason {
+    // 设置缺省错误码
+    option (errors.default_code) = 500;
+
+    // 为某个枚举单独设置错误码
+    ERROR_REASON_PARAMS = 0 [(errors.code) = 400]; // 参数错误
+    ERROR_REASON_SYSTEM = 1 [(errors.code) = 500]; // 系统错误
+
+    ERROR_REASON_GET_TICKET = 2 [(errors.code) = 520]; // 获取 ticket 错误
+    ERROR_REASON_GET_TOKEN = 3[(errors.code) = 520]; // 获取 token 错误
+}

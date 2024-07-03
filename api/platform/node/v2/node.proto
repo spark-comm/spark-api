@@ -1,0 +1,317 @@
+syntax = "proto3";
+
+package api.platform.node.v2;
+
+import "validate/validate.proto";
+import "common/model/v2/conn.proto";
+import "common/enum/v2/enums.proto";
+import "common/model/v2/node.proto";
+option go_package = "github.com/spark-comm/spark-api/api/platform/node/v2;v2";
+option java_multiple_files = true;
+option java_package = "api.platform.node.v2";
+// 节点类型
+enum NodeType{
+    IndependentNode = 0; //独立节点
+    ProxyNode=1;//代理节点
+}
+// 节点类型
+enum NodeStatus{
+    Unknown = 0; //未知
+    Enable = 1; //启用
+    Deactivate=2;//停用
+    TimeLimit=3; //时间限制
+}
+
+message NodeDetails {
+    string pubKey =1; //公钥
+    string priKey =2; //私钥
+    api.common.model.v2.NodeBase base =3; //基本信息
+}
+// Node 服务
+service Node {
+    // 新加节点
+    rpc Add (AddNodeReq) returns (AddNodeReply);
+    // 删除节点
+    rpc Del (DelReq) returns (DelReply);
+    // 编辑节点
+    rpc Edit (EditReq) returns (EditReply);
+    // 编辑节点状态
+    rpc EditStatus (EditStatusReq) returns (EditStatusReply);
+    // 重置节点的key
+    rpc ResetKey (ResetKeyReq) returns (ResetKeyReply);
+    // 获取节点信息
+    rpc GetInfo (GetInfoReq) returns (GetInfoReply);
+    // 根据code获取节点信息
+    rpc GetNodeByCode (GetNodeByCodeReq) returns (GetNodeByCodeReply);
+    // 获取节点列表
+    rpc GetList (GetListReq) returns (GetListReply);
+    // 工具方法
+    // 获取所有数据
+    rpc GetAllList (GetAllListReq) returns (GetAllListReply);
+    // 获取默认节点
+    rpc GetDefNodeNode (GetDefNodeNodeReq) returns (GetDefNodeNodeReply);
+    // 设置默认节点
+    rpc SetDefNodeNode (SetDefNodeNodeReq) returns (SetDefNodeNodeReply);
+    // 获取主节点配置
+    rpc GetMasterSyncInfo (GetMasterSyncInfoReq) returns (GetMasterSyncInfoReply);
+    // 获取主节点
+    rpc GetMasterInfo (GetMasterInfoReq) returns (GetMasterInfoReply);
+    // 根据租户id获取租户下发信息
+    rpc GetDistributeInfo(GetDistributeInfoReq)returns(DistributeInfoReply);
+    //租户上报信息
+    rpc Escalation(EscalationReq)returns(EscalationReply);
+    // 根据给定的节点获取对应的主节点信息
+    rpc GetMasterNodeDetails (GetMasterNodeDetailsReq) returns (GetMasterNodeDetailsReply);
+    // 查询节点以及管理节点列表
+    rpc GetInfoAndManager(GetNodeByCodeReq) returns (NodeAndManager);
+    // 查询节点列表以及管理节点列表
+    rpc GetNodesAndManagers(GetNodesAndManagersReq) returns (GetNodesAndManagersReply);
+    // 获取所有主节点数据
+    rpc GetAllMasterList (GetAllMasterListReq) returns (GetAllMasterListReply);
+    // GetNodeByID 根据id获取节点数据
+    rpc GetNodeByID (GetNodeByIDReq) returns (GetNodeByIDReply);
+}
+
+/*
+    新加节点
+    -------------------------------------------
+    */
+message AddNodeReq {
+    string name = 1[(validate.rules).string.min_len = 1]; //节点名称
+    string masterApi = 2; //受控节点地址
+    string code = 3[(validate.rules).string.min_len = 4]; //邀请码
+    string imApiUrl = 4; //客户imapi域名地址,兼容2.0
+    string imWsUrl = 5; //ws 地址
+    string avAppid = 6; // 腾讯音视频app id
+    string avSecret = 7; // 腾讯音视频密钥
+    string logo = 8 ; // 服务的logo
+    string version = 9; //版本
+    NodeType nodeType = 10; // 节点类型  0：独立节点 2 ：租户节点
+    string masterNodeId = 11; // 主几点id// 当为租户节点时
+    string promotionCode = 12; //租户邀请码
+    string manageApi = 13; // 管理节点地址
+}
+message AddNodeReply {
+    string nodeId = 1;
+}
+
+/*
+    删除节点
+    -------------------------------------------
+ */
+message DelReq {
+    string nodeId = 1; //节点id
+}
+message DelReply {
+}
+
+
+/*
+    编辑节点
+    -------------------------------------------
+ */
+message EditReq {
+    string nodeId = 1; //节点id
+    optional string name = 2; //节点名称
+    optional string masterApi = 3; //受控节点地址
+    optional string code = 4; //邀请码
+    optional string imApiUrl = 5; //客户imapi域名地址,兼容2.0
+    optional string imWsUrl = 6; //ws 地址
+    optional string avAppid = 7; // 腾讯音视频app id
+    optional string avSecret = 8; // 腾讯音视频密钥
+    optional string logo = 9 ; // 服务的logo
+    optional string version = 10; //版本
+    optional string promotionCode = 11; //租户邀请码
+    optional int32  sort = 22;//排序
+}
+message EditReply {
+
+}
+/*
+    编辑节点状态
+    -------------------------------------------
+ */
+message EditStatusReq {
+    string nodeId = 1; //节点id
+    NodeStatus status    = 2;// 1：启用 2：停用 3: 时间限制
+    optional int64 startTime = 3; // 开始时间
+    optional int64 endTime = 4; // 结束时间
+}
+message EditStatusReply {
+
+}
+/*
+    重置节点的key
+    -------------------------------------------
+ */
+message ResetKeyReq {
+    string nodeId = 1; //节点id
+}
+message ResetKeyReply {
+
+}
+
+/*
+    获取节点信息
+    -------------------------------------------
+ */
+message GetInfoReq {
+    string nodeId = 1; //节点id
+}
+message GetInfoReply {
+    NodeDetails data = 1; //节点详情
+}
+
+/*
+    获取节点信息
+    -------------------------------------------
+ */
+message GetNodeByCodeReq {
+    string code = 1; //节点id
+}
+message GetNodeByCodeReply {
+    api.common.model.v2.NodeBase data = 1; //节点详情
+}
+
+/*
+    获取节点列表
+    -------------------------------------------
+ */
+message GetListReq {
+    api.common.model.v2.Pagination page = 1;//分页
+    string name = 2;//节点名称
+    NodeStatus status = 3; //节点状态
+    string  version = 4; //版本
+    string  code = 5; //编码
+}
+message GetListReply {
+    int64 total = 1; //总数
+    repeated NodeDetails list = 2; //节点详情
+}
+/*
+    获取所有数据
+    -------------------------------------------
+ */
+message GetAllListReq {
+    string name = 1;//节点名称
+    NodeStatus status = 2; //节点状态
+    string  version = 3; //版本
+    string  code = 4; //编码
+}
+message GetAllListReply {
+    repeated api.common.model.v2.NodeBase list = 1; //节点详情
+}
+/*
+    获取默认节点
+    -------------------------------------------
+ */
+message GetDefNodeNodeReq {
+
+}
+message GetDefNodeNodeReply {
+    api.common.model.v2.NodeBase data = 1; //节点详情
+}
+/*
+    设置默认节点
+    -------------------------------------------
+ */
+message SetDefNodeNodeReq {
+    string nodeId = 1; //节点id
+}
+message SetDefNodeNodeReply {
+
+}
+
+/*
+    获取主节点配置
+    -------------------------------------------
+ */
+message GetMasterSyncInfoReq {
+    string data = 1; //加密数据
+}
+message GetMasterSyncInfoReply {
+    api.common.model.v2.SingedMsg data=1; //加密信息
+}
+/*
+    获取主节点
+    -------------------------------------------
+ */
+message GetMasterInfoReq {
+    string nodeId = 1; //节点id
+}
+message GetMasterInfoReply {
+    api.common.model.v2.NodeMasterSyncInfo data=1; //同步的节点信息
+}
+/*
+    根据租户id获取租户下发信息
+    -------------------------------------------
+ */
+message GetDistributeInfoReq {
+    string nodeId = 1;//节点主键
+}
+message DistributeInfoReply {
+    NodeDetails info = 1; //节点详情，主节点或租户对应的节点
+    NodeType nodeType = 2; //节点类型
+    api.common.model.v2.TenantDistributeInfo data = 3; //租户下发的信息
+}
+/*
+    根据租户id获取租户下发信息
+    -------------------------------------------
+ */
+message GetMasterNodeDetailsReq {
+    string nodeId = 1;//节点主键
+}
+message GetMasterNodeDetailsReply {
+    NodeDetails info = 1; //节点详情，主节点或租户对应的节点
+}
+/*
+    获取所有主节点信息
+    -------------------------------------------
+ */
+message GetAllMasterListReq {
+}
+message GetAllMasterListReply {
+    repeated api.common.model.v2.NodeBase list = 1; //节点信息
+}
+
+/*
+    租户上报信息
+    -------------------------------------------
+ */
+message EscalationReq {
+    string tenantId = 1;//租户主键
+    api.common.model.v2.SingedMsg data=2; //加密信息
+}
+message EscalationReply {
+    api.common.model.v2.SingedMsg data=1; //加密信息
+}
+
+message NodeAndManager{
+    repeated string managers = 1; //平台节点信息
+    api.common.model.v2.NodeBase node = 2; //节点详情
+}
+
+/*
+    查询节点以及管理节点列表
+    -------------------------------------------
+ */
+message GetNodesAndManagersReq{
+    string  code = 1; //邀请码
+    string  version = 2; //版本
+}
+message GetNodesAndManagersReply{
+    string defNodeName = 1;
+    repeated string managers = 2; //平台节点信息
+    repeated api.common.model.v2.NodeBase nodes = 3; //节点详情
+}
+
+/*
+    根据id获取节点数据
+    -------------------------------------------
+    */
+message GetNodeByIDReq{
+    repeated string NodeId = 1 ; //节点id
+}
+message GetNodeByIDReply{
+    repeated api.common.model.v2.NodeBase list = 1; //节点详情
+}
