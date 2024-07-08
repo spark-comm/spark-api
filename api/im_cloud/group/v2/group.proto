@@ -406,7 +406,7 @@ message GetJoinedGroupListReq {
 }
 message GetJoinedGroupListReply {
   int64 total = 1;
-  repeated api.common.model.group.v2.BaseGroupInfo list = 2;
+  repeated api.common.model.group.v2.GroupInfo list = 2;
 }
 /*
     获取群成员 存在
