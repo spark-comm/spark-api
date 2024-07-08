@@ -35,6 +35,8 @@ service Group {
   rpc CancelMuteGroupMember(CancelMuteGroupMemberReq)returns(google.protobuf.Empty);
   //禁言群成员 存在
   rpc MuteGroupMember(MuteGroupMemberReq)returns(google.protobuf.Empty);
+  //是否是群成员
+  rpc IsGroupMember(IsGroupMemberReq)returns(IsGroupMemberReply);
   //根据code获取群聊 存在
   rpc GetGroupByCode(GetGroupByCodeReq)returns(GetGroupByCodeReply);
 
@@ -198,10 +200,7 @@ message SetGroupMemberInfoReq {
 message KickGroupMemberReq {
   string groupID = 1;
   repeated string kickedUserIdList = 2;//踢人列表
-  string handledMsg = 3;
-  string serverID = 4;
-  string userID = 5;//操作人
-  string reason = 6;//原因
+  string userID = 3;//操作人
 }
 /*
     添加群管理 存在
@@ -228,10 +227,8 @@ message TransferGroupReq {
 message InviteUserToGroupReq {
   string groupID = 1;
   repeated string invitedUserIdList = 2;//邀请用户列表
-  string serverID = 3;
-  string reason = 4;//邀请原因
-  string userID = 5;//邀请人
-  string platform = 6;
+  string reason = 3;//邀请原因
+  string userID = 4;//邀请人
 }
 
 /*
@@ -316,7 +313,7 @@ message GetGroupApplicationListReq {
   string groupID = 4;
 }
 message GetRecvGroupApplicationListReply {
-  uint32 total = 1;
+  int64 total = 1;
   repeated api.common.model.group.v2.GroupRequestInfo list = 2;
 }
 
@@ -331,6 +328,18 @@ message GetGroupByCodeReq {
 }
 message GetGroupByCodeReply {
   api.common.model.group.v2.GroupInfo data = 1;
+}
+/*
+   是否群成员 存在
+   -------------------------------------------
+*/
+message IsGroupMemberReq {
+  string userID = 1;
+  string groupID = 2;
+}
+
+message IsGroupMemberReply {
+  bool isGroupMember = 1;
 }
 /*
     退出群聊 存在
@@ -353,9 +362,6 @@ message CancelGroupManagerReq {
   string groupID = 1;
   string pUserID = 2;//操作人
   string userID = 3;
-  string platform = 4;
-  int64 pageSize = 5;
-  int64 pageNum = 6;
 }
 /*
     批量取消群管理 存在

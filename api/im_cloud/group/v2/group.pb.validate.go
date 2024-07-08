@@ -1289,13 +1289,7 @@ func (m *KickGroupMemberReq) validate(all bool) error {
 
 	// no validation rules for GroupID
 
-	// no validation rules for HandledMsg
-
-	// no validation rules for ServerID
-
 	// no validation rules for UserID
-
-	// no validation rules for Reason
 
 	if len(errors) > 0 {
 		return KickGroupMemberReqMultiError(errors)
@@ -1613,13 +1607,9 @@ func (m *InviteUserToGroupReq) validate(all bool) error {
 
 	// no validation rules for GroupID
 
-	// no validation rules for ServerID
-
 	// no validation rules for Reason
 
 	// no validation rules for UserID
-
-	// no validation rules for Platform
 
 	if len(errors) > 0 {
 		return InviteUserToGroupReqMultiError(errors)
@@ -3125,6 +3115,214 @@ var _ interface {
 	ErrorName() string
 } = GetGroupByCodeReplyValidationError{}
 
+// Validate checks the field values on IsGroupMemberReq with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *IsGroupMemberReq) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on IsGroupMemberReq with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// IsGroupMemberReqMultiError, or nil if none found.
+func (m *IsGroupMemberReq) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *IsGroupMemberReq) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for UserID
+
+	// no validation rules for GroupID
+
+	if len(errors) > 0 {
+		return IsGroupMemberReqMultiError(errors)
+	}
+
+	return nil
+}
+
+// IsGroupMemberReqMultiError is an error wrapping multiple validation errors
+// returned by IsGroupMemberReq.ValidateAll() if the designated constraints
+// aren't met.
+type IsGroupMemberReqMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m IsGroupMemberReqMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m IsGroupMemberReqMultiError) AllErrors() []error { return m }
+
+// IsGroupMemberReqValidationError is the validation error returned by
+// IsGroupMemberReq.Validate if the designated constraints aren't met.
+type IsGroupMemberReqValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e IsGroupMemberReqValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e IsGroupMemberReqValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e IsGroupMemberReqValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e IsGroupMemberReqValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e IsGroupMemberReqValidationError) ErrorName() string { return "IsGroupMemberReqValidationError" }
+
+// Error satisfies the builtin error interface
+func (e IsGroupMemberReqValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sIsGroupMemberReq.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = IsGroupMemberReqValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = IsGroupMemberReqValidationError{}
+
+// Validate checks the field values on IsGroupMemberReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *IsGroupMemberReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on IsGroupMemberReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// IsGroupMemberReplyMultiError, or nil if none found.
+func (m *IsGroupMemberReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *IsGroupMemberReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for IsGroupMember
+
+	if len(errors) > 0 {
+		return IsGroupMemberReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// IsGroupMemberReplyMultiError is an error wrapping multiple validation errors
+// returned by IsGroupMemberReply.ValidateAll() if the designated constraints
+// aren't met.
+type IsGroupMemberReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m IsGroupMemberReplyMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m IsGroupMemberReplyMultiError) AllErrors() []error { return m }
+
+// IsGroupMemberReplyValidationError is the validation error returned by
+// IsGroupMemberReply.Validate if the designated constraints aren't met.
+type IsGroupMemberReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e IsGroupMemberReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e IsGroupMemberReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e IsGroupMemberReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e IsGroupMemberReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e IsGroupMemberReplyValidationError) ErrorName() string {
+	return "IsGroupMemberReplyValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e IsGroupMemberReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sIsGroupMemberReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = IsGroupMemberReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = IsGroupMemberReplyValidationError{}
+
 // Validate checks the field values on QuitGroupReq with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
@@ -3361,12 +3559,6 @@ func (m *CancelGroupManagerReq) validate(all bool) error {
 	// no validation rules for PUserID
 
 	// no validation rules for UserID
-
-	// no validation rules for Platform
-
-	// no validation rules for PageSize
-
-	// no validation rules for PageNum
 
 	if len(errors) > 0 {
 		return CancelGroupManagerReqMultiError(errors)

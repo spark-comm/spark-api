@@ -27,6 +27,7 @@ const (
 	Group_CancelMuteGroup_FullMethodName                  = "/api.im_cloud.group.v2.Group/CancelMuteGroup"
 	Group_CancelMuteGroupMember_FullMethodName            = "/api.im_cloud.group.v2.Group/CancelMuteGroupMember"
 	Group_MuteGroupMember_FullMethodName                  = "/api.im_cloud.group.v2.Group/MuteGroupMember"
+	Group_IsGroupMember_FullMethodName                    = "/api.im_cloud.group.v2.Group/IsGroupMember"
 	Group_GetGroupByCode_FullMethodName                   = "/api.im_cloud.group.v2.Group/GetGroupByCode"
 	Group_DismissGroup_FullMethodName                     = "/api.im_cloud.group.v2.Group/DismissGroup"
 	Group_DismissGroupNotice_FullMethodName               = "/api.im_cloud.group.v2.Group/DismissGroupNotice"
@@ -70,6 +71,8 @@ type GroupClient interface {
 	CancelMuteGroupMember(ctx context.Context, in *CancelMuteGroupMemberReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 禁言群成员 存在
 	MuteGroupMember(ctx context.Context, in *MuteGroupMemberReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// 是否是群成员
+	IsGroupMember(ctx context.Context, in *IsGroupMemberReq, opts ...grpc.CallOption) (*IsGroupMemberReply, error)
 	// 根据code获取群聊 存在
 	GetGroupByCode(ctx context.Context, in *GetGroupByCodeReq, opts ...grpc.CallOption) (*GetGroupByCodeReply, error)
 	// 解散群组 存在
@@ -183,6 +186,15 @@ func (c *groupClient) CancelMuteGroupMember(ctx context.Context, in *CancelMuteG
 func (c *groupClient) MuteGroupMember(ctx context.Context, in *MuteGroupMemberReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, Group_MuteGroupMember_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *groupClient) IsGroupMember(ctx context.Context, in *IsGroupMemberReq, opts ...grpc.CallOption) (*IsGroupMemberReply, error) {
+	out := new(IsGroupMemberReply)
+	err := c.cc.Invoke(ctx, Group_IsGroupMember_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -414,6 +426,8 @@ type GroupServer interface {
 	CancelMuteGroupMember(context.Context, *CancelMuteGroupMemberReq) (*emptypb.Empty, error)
 	// 禁言群成员 存在
 	MuteGroupMember(context.Context, *MuteGroupMemberReq) (*emptypb.Empty, error)
+	// 是否是群成员
+	IsGroupMember(context.Context, *IsGroupMemberReq) (*IsGroupMemberReply, error)
 	// 根据code获取群聊 存在
 	GetGroupByCode(context.Context, *GetGroupByCodeReq) (*GetGroupByCodeReply, error)
 	// 解散群组 存在
@@ -487,6 +501,9 @@ func (UnimplementedGroupServer) CancelMuteGroupMember(context.Context, *CancelMu
 }
 func (UnimplementedGroupServer) MuteGroupMember(context.Context, *MuteGroupMemberReq) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MuteGroupMember not implemented")
+}
+func (UnimplementedGroupServer) IsGroupMember(context.Context, *IsGroupMemberReq) (*IsGroupMemberReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsGroupMember not implemented")
 }
 func (UnimplementedGroupServer) GetGroupByCode(context.Context, *GetGroupByCodeReq) (*GetGroupByCodeReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGroupByCode not implemented")
@@ -692,6 +709,24 @@ func _Group_MuteGroupMember_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GroupServer).MuteGroupMember(ctx, req.(*MuteGroupMemberReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Group_IsGroupMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsGroupMemberReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GroupServer).IsGroupMember(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Group_IsGroupMember_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupServer).IsGroupMember(ctx, req.(*IsGroupMemberReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1144,6 +1179,10 @@ var Group_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MuteGroupMember",
 			Handler:    _Group_MuteGroupMember_Handler,
+		},
+		{
+			MethodName: "IsGroupMember",
+			Handler:    _Group_IsGroupMember_Handler,
 		},
 		{
 			MethodName: "GetGroupByCode",
