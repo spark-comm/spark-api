@@ -3242,6 +3242,8 @@ func (m *GetFriendRequestByApplicantReq) validate(all bool) error {
 
 	// no validation rules for ToUserID
 
+	// no validation rules for UserId
+
 	if len(errors) > 0 {
 		return GetFriendRequestByApplicantReqMultiError(errors)
 	}
